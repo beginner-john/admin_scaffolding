@@ -19,10 +19,19 @@ public class Result<T> {
 
     private T content;
 
+    private PageInfo pageInfo;
+
     //私有化
     private Result() {
     }
 
+    public static <T> Result<T> of(T content, PageInfo pageInfo) {
+        Result<T> result = new Result<>();
+        result.setContent(content);
+        result.setCode(SUCCESS);
+        result.setPageInfo(pageInfo);
+        return result;
+    }
     public static <T> Result<T> of(T content) {
         Result<T> result = new Result<>();
         result.setContent(content);

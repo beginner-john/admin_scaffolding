@@ -1,6 +1,7 @@
 package com.generic.admin_scaffolding.repository;
 
 import com.generic.admin_scaffolding.entity.model.User;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -16,5 +17,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @return
      */
     User findUserByUsernameAndPassword(String username, String password);
+
+//    Page<User> findAll
 
 }
