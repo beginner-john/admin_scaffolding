@@ -13,6 +13,7 @@ public enum ExceptionDef {
         http常见状态码
      */
     ERROR_COMMON_PARAM_NULL(1,"ERROR_COMMON_PARAM_NULL","参数为空"),
+    ERROR_DATA_NOT_EXIST(2,"ERROR_DATA_NOT_EXIST","数据不存在"),
 
 
     ERROR_USER_LOGIN_FAILED(401, "ERROR_USER_LOGIN_FAILED","用户名或密码错误，登录失败"),

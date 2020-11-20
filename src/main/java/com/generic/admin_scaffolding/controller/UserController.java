@@ -29,10 +29,28 @@ public class UserController {
         return userService.getUserList(page, pageSize);
     }
 
+    @ApiOperation("用户详情")
+    @GetMapping("/{id}")
+    public Result<User> findById(@PathVariable Long id) {
+        return userService.findById(id);
+    }
+
     @ApiOperation("新增用户")
     @PostMapping
     public Result<User> save(@RequestBody User user) {
         return userService.saveUser(user);
+    }
+
+    @ApiOperation("修改用户")
+    @PutMapping
+    public Result<User> update(@RequestBody User user) {
+        return userService.updateUser(user);
+    }
+
+    @ApiOperation("删除用户")
+    @DeleteMapping("/{id}")
+    public Result<Boolean> update(@PathVariable Long id) {
+        return userService.deleteUser(id);
     }
 
 }
