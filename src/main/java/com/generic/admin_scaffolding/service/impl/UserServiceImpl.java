@@ -8,6 +8,7 @@ import com.generic.admin_scaffolding.exception.ExceptionDef;
 import com.generic.admin_scaffolding.exception.ServiceException;
 import com.generic.admin_scaffolding.repository.UserRepository;
 import com.generic.admin_scaffolding.service.UserService;
+import com.generic.admin_scaffolding.utils.DateUtils;
 import com.generic.admin_scaffolding.utils.MD5Utils;
 import com.generic.admin_scaffolding.utils.PageInfoUtils;
 import org.springframework.beans.BeanUtils;
@@ -52,8 +53,7 @@ public class UserServiceImpl implements UserService {
         userData.setPassword(MD5Utils.encrypt(user.getPassword()));
         userData.setStatus(DataDictionaryEnum.ENABLE.getCode());
         userData.setIsAdmin(DataDictionaryEnum.CUSTOMER.getCode());
-        long time = System.currentTimeMillis();
-        userData.setCreatedTime(new Timestamp(time));
+        userData.setCreatedTime(DateUtils.getCurrentTimestamp());
         userData.setCreated_by(null);//todo
 
         return Result.of(userRepository.saveAndFlush(userData));
