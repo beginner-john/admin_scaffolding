@@ -1,6 +1,7 @@
 package com.generic.admin_scaffolding.service;
 
 import com.generic.admin_scaffolding.common.Result;
+import com.generic.admin_scaffolding.entity.dto.UserRoleDTO;
 import com.generic.admin_scaffolding.entity.model.User;
 
 import java.util.List;
@@ -47,4 +48,8 @@ public interface UserService {
     Result<Boolean> deleteUser(Long id);
 
     Result<User> findById(Long id);
+
+    Result bindingRole(UserRoleDTO roleIds);
+
+    Result relieveRole(UserRoleDTO roleIds);
 }

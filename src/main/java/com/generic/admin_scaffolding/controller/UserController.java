@@ -1,6 +1,7 @@
 package com.generic.admin_scaffolding.controller;
 
 import com.generic.admin_scaffolding.common.Result;
+import com.generic.admin_scaffolding.entity.dto.UserRoleDTO;
 import com.generic.admin_scaffolding.entity.model.User;
 import com.generic.admin_scaffolding.service.UserService;
 import io.swagger.annotations.Api;
@@ -51,6 +52,18 @@ public class UserController {
     @DeleteMapping("/{id}")
     public Result<Boolean> update(@PathVariable Long id) {
         return userService.deleteUser(id);
+    }
+
+    @ApiOperation("给用户绑定角色,角色多选")
+    @PostMapping("/bindingRole")
+    public Result bindingRole(@RequestBody UserRoleDTO roleIds){
+        return userService.bindingRole(roleIds);
+    }
+
+    @ApiOperation("给用户解除角色,角色多选")
+    @PostMapping("/relieveRole")
+    public Result relieveRole(@RequestBody UserRoleDTO roleIds){
+        return userService.relieveRole(roleIds);
     }
 
 }

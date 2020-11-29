@@ -1,12 +1,14 @@
 package com.generic.admin_scaffolding.service.impl;
 
-import com.generic.admin_scaffolding.common.PageInfo;
 import com.generic.admin_scaffolding.common.Result;
+import com.generic.admin_scaffolding.entity.dto.UserRoleDTO;
 import com.generic.admin_scaffolding.entity.enums.DataDictionaryEnum;
 import com.generic.admin_scaffolding.entity.model.User;
+import com.generic.admin_scaffolding.entity.model.UserRole;
 import com.generic.admin_scaffolding.exception.ExceptionDef;
 import com.generic.admin_scaffolding.exception.ServiceException;
 import com.generic.admin_scaffolding.repository.UserRepository;
+import com.generic.admin_scaffolding.repository.UserRoleRepository;
 import com.generic.admin_scaffolding.service.UserService;
 import com.generic.admin_scaffolding.utils.DateUtils;
 import com.generic.admin_scaffolding.utils.MD5Utils;
@@ -20,8 +22,7 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.sql.Timestamp;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author xiong.bo
@@ -33,6 +34,8 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private UserRepository userRepository;
+    @Resource
+    private UserRoleRepository userRoleRepository;
 
     @Override
     public Result<List<User>> getUserList(int page, int pageSize) {
@@ -43,7 +46,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Result<User> saveUser(User user) {
-        if(StringUtils.isEmpty(user.getUsername())||StringUtils.isEmpty(user.getPassword())){
+        if (StringUtils.isEmpty(user.getUsername()) || StringUtils.isEmpty(user.getPassword())) {
             throw new ServiceException(ExceptionDef.ERROR_COMMON_PARAM_NULL);
         }
         User userData = new User();
@@ -100,5 +103,33 @@ public class UserServiceImpl implements UserService {
             throw new ServiceException(ExceptionDef.ERROR_DATA_NOT_EXIST);
         }
         return Result.of(optionalUser.get());
+    }
+
+    @Override
+    public Result bindingRole(UserRoleDTO roleIds) {
+        if (Objects.isNull(roleIds) || Objects.isNull(roleIds.getUserId())) {
+            throw new ServiceException(ExceptionDef.ERROR_COMMON_PARAM_NULL);
+        }
+        List<UserRole> urList = new ArrayList<>();
+        roleIds.getRoleIds().forEach(e -> {
+            UserRole userRole = new UserRole();
+            userRole.setRoleId(e);
+            userRole.setUserId(roleIds.getUserId());
+            userRole.setCreatedBy(null);
+            userRole.setCreatedTime(DateUtils.getCurrentTimestamp());
+            urList.add(userRole);
+        });
+
+        userRoleRepository.saveAll(urList);
+        return Result.of(true);
+    }
+
+    @Override
+    public Result relieveRole(UserRoleDTO roleIds) {
+        if (Objects.isNull(roleIds) || Objects.isNull(roleIds.getUserId()) || Objects.isNull(roleIds.getRoleIds())) {
+            throw new ServiceException(ExceptionDef.ERROR_COMMON_PARAM_NULL);
+        }
+        Integer row = userRoleRepository.deleteByRoleIds(roleIds.getRoleIds());
+        return Result.of(row);
     }
 }
