@@ -1,6 +1,7 @@
 package com.generic.admin_scaffolding.controller;
 
 import com.generic.admin_scaffolding.common.Result;
+import com.generic.admin_scaffolding.entity.dto.RoleResourceDTO;
 import com.generic.admin_scaffolding.entity.model.SystemRole;
 import com.generic.admin_scaffolding.service.SystemRoleService;
 import io.swagger.annotations.Api;
@@ -48,6 +49,19 @@ public class SystemRoleController {
     @PutMapping
     public Result<SystemRole> updateRole(@RequestBody SystemRole role) {
         return systemRoleService.updateRole(role);
+    }
+
+
+    @ApiOperation("给角色绑定资源,资源多选")
+    @PostMapping("/bindingResource")
+    public Result bindingRole(@RequestBody RoleResourceDTO dto) {
+        return systemRoleService.bindingRole(dto);
+    }
+
+    @ApiOperation("给角色解除资源,资源多选")
+    @PostMapping("/relieveResource")
+    public Result relieveRole(@RequestBody RoleResourceDTO dto) {
+        return systemRoleService.relieveRole(dto);
     }
 
 

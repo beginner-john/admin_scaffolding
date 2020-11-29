@@ -1,6 +1,7 @@
 package com.generic.admin_scaffolding.service;
 
 import com.generic.admin_scaffolding.common.Result;
+import com.generic.admin_scaffolding.entity.dto.RoleResourceDTO;
 import com.generic.admin_scaffolding.entity.model.SystemRole;
 
 import java.util.List;
@@ -46,4 +47,7 @@ public interface SystemRoleService {
      */
     Result<SystemRole> updateRole(SystemRole role);
 
+    Result bindingRole(RoleResourceDTO dto);
+
+    Result relieveRole(RoleResourceDTO dto);
 }

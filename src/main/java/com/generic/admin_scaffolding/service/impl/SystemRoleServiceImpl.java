@@ -1,10 +1,13 @@
 package com.generic.admin_scaffolding.service.impl;
 
 import com.generic.admin_scaffolding.common.Result;
+import com.generic.admin_scaffolding.entity.dto.RoleResourceDTO;
 import com.generic.admin_scaffolding.entity.enums.DataDictionaryEnum;
+import com.generic.admin_scaffolding.entity.model.RoleResource;
 import com.generic.admin_scaffolding.entity.model.SystemRole;
 import com.generic.admin_scaffolding.exception.ExceptionDef;
 import com.generic.admin_scaffolding.exception.ServiceException;
+import com.generic.admin_scaffolding.repository.RoleResourceRepository;
 import com.generic.admin_scaffolding.repository.SystemRoleRepository;
 import com.generic.admin_scaffolding.service.SystemRoleService;
 import com.generic.admin_scaffolding.utils.DateUtils;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -30,6 +34,8 @@ public class SystemRoleServiceImpl implements SystemRoleService {
 
     @Resource
     private SystemRoleRepository systemRoleRepository;
+    @Resource
+    private RoleResourceRepository roleResourceRepository;
 
     @Override
     public Result<List<SystemRole>> getRoleList(int page, int pageSize) {
@@ -78,5 +84,33 @@ public class SystemRoleServiceImpl implements SystemRoleService {
         existRole.setStatus(Objects.isNull(role.getStatus()) ? existRole.getStatus() : role.getStatus());
 
         return Result.of(systemRoleRepository.saveAndFlush(existRole));
+    }
+
+    @Override
+    public Result bindingRole(RoleResourceDTO dto) {
+        if (Objects.isNull(dto) || Objects.isNull(dto.getRoleId())|| Objects.isNull(dto.getResourceIds())) {
+            throw new ServiceException(ExceptionDef.ERROR_COMMON_PARAM_NULL);
+        }
+        List<RoleResource> rrList = new ArrayList<>();
+        dto.getResourceIds().forEach(e -> {
+            RoleResource roleResource = new RoleResource();
+            roleResource.setRoleId(dto.getRoleId());
+            roleResource.setResourceId(e);
+            roleResource.setCreatedBy(null);
+            roleResource.setCreatedTime(DateUtils.getCurrentTimestamp());
+            rrList.add(roleResource);
+        });
+
+        roleResourceRepository.saveAll(rrList);
+        return Result.of(true);
+    }
+
+    @Override
+    public Result relieveRole(RoleResourceDTO dto) {
+        if (Objects.isNull(dto) || Objects.isNull(dto.getRoleId()) || Objects.isNull(dto.getResourceIds())) {
+            throw new ServiceException(ExceptionDef.ERROR_COMMON_PARAM_NULL);
+        }
+        Integer row = roleResourceRepository.deleteByResourceIds(dto.getResourceIds());
+        return Result.of(row);
     }
 }

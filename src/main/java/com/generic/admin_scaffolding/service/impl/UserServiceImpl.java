@@ -106,15 +106,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Result bindingRole(UserRoleDTO roleIds) {
-        if (Objects.isNull(roleIds) || Objects.isNull(roleIds.getUserId())) {
+    public Result bindingRole(UserRoleDTO dto) {
+        if (Objects.isNull(dto) || Objects.isNull(dto.getUserId()) || Objects.isNull(dto.getRoleIds())) {
             throw new ServiceException(ExceptionDef.ERROR_COMMON_PARAM_NULL);
         }
         List<UserRole> urList = new ArrayList<>();
-        roleIds.getRoleIds().forEach(e -> {
+        dto.getRoleIds().forEach(e -> {
             UserRole userRole = new UserRole();
             userRole.setRoleId(e);
-            userRole.setUserId(roleIds.getUserId());
+            userRole.setUserId(dto.getUserId());
             userRole.setCreatedBy(null);
             userRole.setCreatedTime(DateUtils.getCurrentTimestamp());
             urList.add(userRole);
@@ -125,11 +125,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Result relieveRole(UserRoleDTO roleIds) {
-        if (Objects.isNull(roleIds) || Objects.isNull(roleIds.getUserId()) || Objects.isNull(roleIds.getRoleIds())) {
+    public Result relieveRole(UserRoleDTO dto) {
+        if (Objects.isNull(dto) || Objects.isNull(dto.getUserId()) || Objects.isNull(dto.getRoleIds())) {
             throw new ServiceException(ExceptionDef.ERROR_COMMON_PARAM_NULL);
         }
-        Integer row = userRoleRepository.deleteByRoleIds(roleIds.getRoleIds());
+        Integer row = userRoleRepository.deleteByRoleIds(dto.getRoleIds());
         return Result.of(row);
     }
 }
