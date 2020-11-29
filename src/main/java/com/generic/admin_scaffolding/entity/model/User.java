@@ -7,6 +7,7 @@ import java.sql.Timestamp;
 
 /**
  * 用户信息表
+ * 这里用户指登录系统的用户
  */
 
 @Entity
@@ -53,7 +54,7 @@ public class User {
      * 创建者
      */
     @Column(name = "created_by")
-    private Long created_by;
+    private Long createdBy;
 
     /**
      * 标识是否是管理员：0 默认普通用户，1 为系统管理员

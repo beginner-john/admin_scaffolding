@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
         userData.setStatus(DataDictionaryEnum.ENABLE.getCode());
         userData.setIsAdmin(DataDictionaryEnum.CUSTOMER.getCode());
         userData.setCreatedTime(DateUtils.getCurrentTimestamp());
-        userData.setCreated_by(null);//todo
+        userData.setCreatedBy(null);//todo
 
         return Result.of(userRepository.saveAndFlush(userData));
     }
@@ -72,14 +72,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Result<User> updateUser(User user) {
-        if (StringUtils.isEmpty(user.getId())) {
-            throw new ServiceException(ExceptionDef.ERROR_COMMON_PARAM_NULL);
-        }
-        Optional<User> optionalUser = userRepository.findById(user.getId());
-        if (!optionalUser.isPresent()) {
-            throw new ServiceException(ExceptionDef.ERROR_DATA_NOT_EXIST);
-        }
-        User existUser = optionalUser.get();
+        User existUser = getUserById(user.getId());
         existUser.setPassword(MD5Utils.encrypt(user.getPassword()));
         existUser.setPhone(user.getPhone());
         existUser.setSex(user.getSex());
@@ -98,11 +91,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Result<User> findById(Long id) {
+        return Result.of(getUserById(id));
+    }
+
+    private User getUserById(Long id) {
+        if (StringUtils.isEmpty(id)) {
+            throw new ServiceException(ExceptionDef.ERROR_COMMON_PARAM_NULL);
+        }
         Optional<User> optionalUser = userRepository.findById(id);
         if (!optionalUser.isPresent()) {
             throw new ServiceException(ExceptionDef.ERROR_DATA_NOT_EXIST);
         }
-        return Result.of(optionalUser.get());
+        return optionalUser.get();
     }
 
     @Override

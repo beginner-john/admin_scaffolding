@@ -6,6 +6,8 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 
 /**
+ * 用户和系统角色的管理表
+ *
  * @author xiong.bo
  * @version 1.0
  * @date 2020/11/21 11:13
