@@ -63,8 +63,8 @@ public class SystemRoleServiceImpl implements SystemRoleService {
         systemRole.setRoleName(role.getRoleName());
         systemRole.setRemark(role.getRemark());
         systemRole.setStatus(DataDictionaryEnum.ENABLE.getCode());
-        systemRole.setCreatedTime(DateUtils.getCurrentTimestamp());
-        systemRole.setCreatedBy(null);//todo
+        systemRole.setCreateTime(DateUtils.getCurrentTimestamp());
+        systemRole.setCreateBy(null);//todo
 
         return Result.of(systemRoleRepository.saveAndFlush(systemRole));
     }
@@ -96,8 +96,8 @@ public class SystemRoleServiceImpl implements SystemRoleService {
             RoleResource roleResource = new RoleResource();
             roleResource.setRoleId(dto.getRoleId());
             roleResource.setResourceId(e);
-            roleResource.setCreatedBy(null);
-            roleResource.setCreatedTime(DateUtils.getCurrentTimestamp());
+            roleResource.setCreateBy(null);
+            roleResource.setCreateTime(DateUtils.getCurrentTimestamp());
             rrList.add(roleResource);
         });
 

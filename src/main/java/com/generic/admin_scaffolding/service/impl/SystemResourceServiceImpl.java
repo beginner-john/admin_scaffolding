@@ -65,8 +65,8 @@ public class SystemResourceServiceImpl implements SystemResourceService {
         resourceData.setShowOrder(systemResource.getShowOrder());
         resourceData.setRemark(systemResource.getRemark());
         resourceData.setResUrl(systemResource.getResUrl());
-        resourceData.setCreatedTime(DateUtils.getCurrentTimestamp());
-        resourceData.setCreatedBy(null);
+        resourceData.setCreateTime(DateUtils.getCurrentTimestamp());
+        resourceData.setCreateBy(null);
 
         return Result.of(resourceRepository.save(resourceData));
     }

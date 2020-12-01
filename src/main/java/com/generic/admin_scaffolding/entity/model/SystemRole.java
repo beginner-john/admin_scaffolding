@@ -1,18 +1,19 @@
 package com.generic.admin_scaffolding.entity.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 
 /**
  * 系统角色表
  */
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "t_system_role")
 @Data
-public class SystemRole {
+public class SystemRole  extends BaseModel{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,12 +28,6 @@ public class SystemRole {
     private String remark;
 
     private Integer status;
-
-    @Column(name = "created_time")
-    private Timestamp createdTime;
-
-    @Column(name = "created_by")
-    private Long createdBy;
 
 
 }

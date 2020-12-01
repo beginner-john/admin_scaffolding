@@ -13,7 +13,6 @@ import com.generic.admin_scaffolding.service.UserService;
 import com.generic.admin_scaffolding.utils.DateUtils;
 import com.generic.admin_scaffolding.utils.MD5Utils;
 import com.generic.admin_scaffolding.utils.PageInfoUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
-import java.sql.Timestamp;
 import java.util.*;
 
 /**
@@ -56,8 +54,8 @@ public class UserServiceImpl implements UserService {
         userData.setPassword(MD5Utils.encrypt(user.getPassword()));
         userData.setStatus(DataDictionaryEnum.ENABLE.getCode());
         userData.setIsAdmin(DataDictionaryEnum.CUSTOMER.getCode());
-        userData.setCreatedTime(DateUtils.getCurrentTimestamp());
-        userData.setCreatedBy(null);//todo
+        userData.setCreateTime(DateUtils.getCurrentTimestamp());
+        userData.setCreateBy(null);//todo
 
         return Result.of(userRepository.saveAndFlush(userData));
     }
@@ -115,8 +113,8 @@ public class UserServiceImpl implements UserService {
             UserRole userRole = new UserRole();
             userRole.setRoleId(e);
             userRole.setUserId(dto.getUserId());
-            userRole.setCreatedBy(null);
-            userRole.setCreatedTime(DateUtils.getCurrentTimestamp());
+            userRole.setCreateBy(null);
+            userRole.setCreateTime(DateUtils.getCurrentTimestamp());
             urList.add(userRole);
         });
 

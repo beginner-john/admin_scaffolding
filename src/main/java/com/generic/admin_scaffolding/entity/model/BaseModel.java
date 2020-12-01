@@ -2,31 +2,19 @@ package com.generic.admin_scaffolding.entity.model;
 
 import lombok.Data;
 
-import javax.persistence.*;
+import javax.persistence.Column;
 import java.sql.Timestamp;
 
 /**
- * 用户和系统角色的关联表
+ * 表模型的基础类
  *
  * @author xiong.bo
  * @version 1.0
- * @date 2020/11/21 11:13
+ * @date 2020/12/1 16:26
  */
-
-@Entity
-@Table(name = "t_user_role")
 @Data
-public class UserRole {
+public class BaseModel {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "user_id")
-    private Long userId;
-
-    @Column(name = "role_id")
-    private Long roleId;
 
     /**
      * 创建时间
@@ -39,5 +27,17 @@ public class UserRole {
      */
     @Column(name = "create_by")
     private Long createBy;
+
+    /**
+     * 更新时间
+     */
+    @Column(name = "update_time")
+    private Timestamp updateTime;
+
+    /**
+     * 更新者
+     */
+    @Column(name = "update_by")
+    private Long updateBy;
 
 }

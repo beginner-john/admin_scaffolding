@@ -1,19 +1,20 @@
 package com.generic.admin_scaffolding.entity.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 
 /**
  * 用户信息表
  * 这里用户指登录系统的用户
  */
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "t_user")
 @Data
-public class User {
+public class User extends BaseModel{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,18 +44,6 @@ public class User {
      * 状态：1 启用，0 禁用
      */
     private Integer status;
-
-    /**
-     * 创建时间
-     */
-    @Column(name = "created_time")
-    private Timestamp createdTime;
-
-    /**
-     * 创建者
-     */
-    @Column(name = "created_by")
-    private Long createdBy;
 
     /**
      * 标识是否是管理员：0 默认普通用户，1 为系统管理员
