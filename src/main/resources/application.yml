@@ -1,0 +1,20 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/admin_scaffolding?charset=utf8mb4&useSSL=false&serverTimezone=Asia/Shanghai&characterEncoding=utf-8
+    username: root
+    password: xb1061787907.
+  jpa:
+    show-sql: true
+
+audience:
+  # 代表这个JWT的接收对象,存入audience
+  clientId: wolf_agent_client
+  # 密钥, 经过Base64加密, 可自行替换
+  base64Secret: 69CDE47CD4D756D13D972C90C090481E
+  # JWT的签发主体，存入issuer
+  name: wolf_agent_client
+  # 过期时间，时间戳,四个小时（毫秒）
+  expiresSecond: 14400000
