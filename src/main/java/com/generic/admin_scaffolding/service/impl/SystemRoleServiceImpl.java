@@ -46,11 +46,16 @@ public class SystemRoleServiceImpl implements SystemRoleService {
 
     @Override
     public Result<SystemRole> findById(Long id) {
+        return Result.of(getSystemRoleById(id));
+    }
+
+    //查看详情
+    private SystemRole getSystemRoleById(Long id) {
         Optional<SystemRole> optionalUser = systemRoleRepository.findById(id);
         if (!optionalUser.isPresent()) {
             throw new ServiceException(ExceptionDef.ERROR_DATA_NOT_EXIST);
         }
-        return Result.of(optionalUser.get());
+        return optionalUser.get();
     }
 
     @Override
@@ -71,14 +76,7 @@ public class SystemRoleServiceImpl implements SystemRoleService {
 
     @Override
     public Result<SystemRole> updateRole(SystemRole role) {
-        if (StringUtils.isEmpty(role.getId())) {
-            throw new ServiceException(ExceptionDef.ERROR_COMMON_PARAM_NULL);
-        }
-        Optional<SystemRole> optionalRole = systemRoleRepository.findById(role.getId());
-        if (!optionalRole.isPresent()) {
-            throw new ServiceException(ExceptionDef.ERROR_DATA_NOT_EXIST);
-        }
-        SystemRole existRole = optionalRole.get();
+        SystemRole existRole = getSystemRoleById(role.getId());
         existRole.setRoleName(StringUtils.isEmpty(role.getRoleName()) ? existRole.getRoleName() : role.getRoleName());
         existRole.setRemark(StringUtils.isEmpty(role.getRemark()) ? existRole.getRemark() : role.getRemark());
         existRole.setStatus(Objects.isNull(role.getStatus()) ? existRole.getStatus() : role.getStatus());

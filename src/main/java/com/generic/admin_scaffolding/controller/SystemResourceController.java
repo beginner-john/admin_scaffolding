@@ -48,7 +48,7 @@ public class SystemResourceController {
         return resourceService.update(systemResource);
     }
 
-    @ApiOperation("删除系统资源")
+    @ApiOperation("批量删除系统资源")
     @DeleteMapping
     public Result<Integer> deleteByIds(@RequestBody List<Long> ids) {
         return resourceService.deleteByIds(ids);
