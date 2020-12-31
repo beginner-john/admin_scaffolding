@@ -49,6 +49,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User findByUsername(String username) {
+        if (StringUtils.isEmpty(username)) {
+            throw new ServiceException(ExceptionDef.ERROR_COMMON_PARAM_NULL);
+        }
+        return userRepository.findUserByUsername(username);
+    }
+
+    @Override
     public Result<User> saveUser(User user) {
         if (StringUtils.isEmpty(user.getUsername()) || StringUtils.isEmpty(user.getPassword())) {
             throw new ServiceException(ExceptionDef.ERROR_COMMON_PARAM_NULL);

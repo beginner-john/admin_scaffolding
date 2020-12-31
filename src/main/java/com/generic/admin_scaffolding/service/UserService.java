@@ -24,6 +24,9 @@ public interface UserService {
      */
     Result<List<User>> getUserList(int page, int pageSize);
 
+    //根据用户名查找用户实体
+    User findByUsername(String username);
+
     /**
      * 新增用户
      *

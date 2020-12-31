@@ -4,6 +4,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 用户信息表
@@ -50,5 +52,17 @@ public class User extends BaseModel{
      */
     @Column(name = "is_admin")
     private Integer isAdmin;
+
+    @OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
+    @JoinTable(name="t_user_role",
+            joinColumns={ @JoinColumn(name="user_id",referencedColumnName="id")},
+            inverseJoinColumns={@JoinColumn(name="role_id",referencedColumnName="id")})
+    private List<SystemRole> roleList = new ArrayList<SystemRole>();
+
+
+    public List<SystemRole> getRoleList() {
+        return roleList;
+    }
+
 
 }
