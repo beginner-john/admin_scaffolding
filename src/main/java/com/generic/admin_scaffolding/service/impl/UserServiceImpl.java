@@ -1,6 +1,7 @@
 package com.generic.admin_scaffolding.service.impl;
 
 import com.generic.admin_scaffolding.common.Result;
+import com.generic.admin_scaffolding.entity.dto.UserDto;
 import com.generic.admin_scaffolding.entity.dto.UserRoleDTO;
 import com.generic.admin_scaffolding.entity.enums.DataDictionaryEnum;
 import com.generic.admin_scaffolding.entity.model.User;
@@ -13,6 +14,8 @@ import com.generic.admin_scaffolding.service.UserService;
 import com.generic.admin_scaffolding.utils.DateUtils;
 import com.generic.admin_scaffolding.utils.MD5Utils;
 import com.generic.admin_scaffolding.utils.PageInfoUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +32,9 @@ import java.util.*;
  */
 @Service("userService")
 public class UserServiceImpl implements UserService {
+
+    //使用ehcache配置的缓存名users_test
+    private final String USER_CACHE_NAME = "usersCache";
 
     @Resource
     private UserRepository userRepository;
@@ -69,6 +75,7 @@ public class UserServiceImpl implements UserService {
      */
 
     @Override
+    @CacheEvict(value = USER_CACHE_NAME, key = "'user' + #user.id")
     public Result<User> updateUser(User user) {
         User existUser = getUserById(user.getId());
         existUser.setPassword(MD5Utils.encrypt(user.getPassword()));
@@ -82,12 +89,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @CacheEvict(value = USER_CACHE_NAME, key = "'user' + #userDto.id")
+    public Result<User> updatePassword(UserDto userDto) {
+        User existUser = getUserById(userDto.getId());
+        if (!existUser.getPassword().equals(userDto.getOldPassword())) {
+            throw new ServiceException(ExceptionDef.ERROR_PASSWORD_FAILED);
+        }
+        if (StringUtils.isEmpty(userDto.getOldPassword()) || !userDto.getOldPassword().equals(userDto.getNewPassword())) {
+            throw new ServiceException(ExceptionDef.ERROR_PASSWORD_INCONSISTENCY);
+        }
+        existUser.setPassword(MD5Utils.encrypt(userDto.getNewPassword()));
+        return Result.of(userRepository.saveAndFlush(existUser));
+    }
+
+    @Override
     public Result<Boolean> deleteUser(Long id) {
         userRepository.deleteById(id);
         return Result.of(true);
     }
 
     @Override
+    @Cacheable(value = USER_CACHE_NAME, key = "'user' + #id")
     public Result<User> findById(Long id) {
         return Result.of(getUserById(id));
     }

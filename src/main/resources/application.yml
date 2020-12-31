@@ -8,6 +8,9 @@ spring:
     password: xb1061787907.
   jpa:
     show-sql: true
+  cache:
+    ehcache:
+      config: classpath:/ehcache.xml
 
 audience:
   # 代表这个JWT的接收对象,存入audience

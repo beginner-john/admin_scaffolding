@@ -22,6 +22,8 @@ public enum ExceptionDef {
     /*
         业务自定义状态码
      */
+    ERROR_PASSWORD_FAILED(1001, "ERROR_PASSWORD_FAILED","密码错误"),
+    ERROR_PASSWORD_INCONSISTENCY(1002, "ERROR_PASSWORD_INCONSISTENCY","两次密码为空或者不一致"),
     ;
 
 
