@@ -19,6 +19,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -40,6 +41,8 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     @Resource
     private UserRoleRepository userRoleRepository;
+    @Resource
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Override
     public Result<List<User>> getUserList(int page, int pageSize) {
@@ -65,7 +68,7 @@ public class UserServiceImpl implements UserService {
         userData.setUsername(user.getUsername());
         userData.setPhone(user.getPhone());
         userData.setSex(user.getSex());
-        userData.setPassword(MD5Utils.encrypt(user.getPassword()));
+        userData.setPassword(passwordEncoder.encode(user.getPassword()));
         userData.setStatus(DataDictionaryEnum.ENABLE.getCode());
         userData.setIsAdmin(DataDictionaryEnum.CUSTOMER.getCode());
         userData.setCreateTime(DateUtils.getCurrentTimestamp());
@@ -86,7 +89,7 @@ public class UserServiceImpl implements UserService {
     @CacheEvict(value = USER_CACHE_NAME, key = "'user' + #user.id")
     public Result<User> updateUser(User user) {
         User existUser = getUserById(user.getId());
-        existUser.setPassword(MD5Utils.encrypt(user.getPassword()));
+        existUser.setPassword(passwordEncoder.encode(user.getPassword()));
         existUser.setPhone(user.getPhone());
         existUser.setSex(user.getSex());
         int s = user.getStatus() == DataDictionaryEnum.ENABLE.getCode() ? DataDictionaryEnum.ENABLE.getCode()
@@ -100,13 +103,14 @@ public class UserServiceImpl implements UserService {
     @CacheEvict(value = USER_CACHE_NAME, key = "'user' + #userDto.id")
     public Result<User> updatePassword(UserDto userDto) {
         User existUser = getUserById(userDto.getId());
-        if (!existUser.getPassword().equals(userDto.getOldPassword())) {
-            throw new ServiceException(ExceptionDef.ERROR_PASSWORD_FAILED);
-        }
-        if (StringUtils.isEmpty(userDto.getOldPassword()) || !userDto.getOldPassword().equals(userDto.getNewPassword())) {
+        if (StringUtils.isEmpty(userDto.getOldPassword()) || !userDto.getNewPassword().equals(userDto.getRenewPassword())) {
             throw new ServiceException(ExceptionDef.ERROR_PASSWORD_INCONSISTENCY);
         }
-        existUser.setPassword(MD5Utils.encrypt(userDto.getNewPassword()));
+        //matches 方法解密来验证
+        if (!passwordEncoder.matches(userDto.getOldPassword(), existUser.getPassword())) {
+            throw new ServiceException(ExceptionDef.ERROR_PASSWORD_FAILED);
+        }
+        existUser.setPassword(passwordEncoder.encode(userDto.getNewPassword()));
         return Result.of(userRepository.saveAndFlush(existUser));
     }
 

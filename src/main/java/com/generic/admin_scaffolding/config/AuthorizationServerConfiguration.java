@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -20,6 +21,7 @@ import org.springframework.web.filter.CorsFilter;
 
 /**
  * 认证服务
+ *
  * @author xiong.bo
  * @version 1.0
  * @date 2020/12/31 14:50
@@ -36,9 +38,8 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     private AuthenticationManager authenticationManager;
 
 
-
     @Bean
-    public TokenStore tokenStore(){
+    public TokenStore tokenStore() {
         return new JwtTokenStore(accessTokenConverter());
     }
 
@@ -65,13 +66,13 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.inMemory()
                 .withClient("my-trusted-client")//客户端ID
+                .secret(new BCryptPasswordEncoder().encode("secret"))//密码
                 .authorizedGrantTypes("password", "authorization_code", "refresh_token", "implicit", "client_credentials")
                 .authorities("ROLE_CLIENT", "ROLE_TRUSTED_CLIENT")
                 .scopes("read", "write", "trust")//授权用户的操作权限
-                .secret("secret")//密码
-                .accessTokenValiditySeconds(120)//token有效期为120秒
-                .refreshTokenValiditySeconds(600)
-                .redirectUris("http://example.com");//刷新token有效期为600秒
+                .accessTokenValiditySeconds(60 * 60 * 3)//token有效期为3小时
+                .refreshTokenValiditySeconds(60 * 60 * 3)//刷新token有效期为3小时
+                .redirectUris("http://example.com");
     }
 
     @Override
@@ -82,6 +83,6 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
                 // token生成方式
                 .accessTokenConverter(accessTokenConverter())
                 //接收GET和POST
-                .allowedTokenEndpointRequestMethods(HttpMethod.GET, HttpMethod.POST);
+                .allowedTokenEndpointRequestMethods(HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE);
     }
 }

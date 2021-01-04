@@ -11,6 +11,15 @@ import org.springframework.util.DigestUtils;
  */
 public class MD5Utils {
 
+    /**
+     * 推荐使用BCryptPasswordEncoder加密解密工具类
+     * spring security中的BCryptPasswordEncoder方法采用SHA-256 +随机盐+密钥对密码进行加密。
+     * SHA系列是Hash算法，不是加密算法，使用加密算法意味着可以解密（这个与编码/解码一样），但是采用Hash处理，其过程是不可逆的。
+     * 加密(encode)
+     * 密码匹配(matches)
+     * BCrypt强哈希方法 每次加密的结果都不一样（即使同一个要加密的值）。
+     *
+     */
 
     /**
      * <p>加密规则：</p>
@@ -22,6 +31,7 @@ public class MD5Utils {
      * @param str 明文
      * @return
      */
+    @Deprecated
     public static String encrypt(String str) {
 
         // 密钥,不随意更改，否则与之前的密码生成规则不一致了
