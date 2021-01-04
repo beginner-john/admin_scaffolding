@@ -64,6 +64,11 @@ public class UserServiceImpl implements UserService {
         if (StringUtils.isEmpty(user.getUsername()) || StringUtils.isEmpty(user.getPassword())) {
             throw new ServiceException(ExceptionDef.ERROR_COMMON_PARAM_NULL);
         }
+        //用户名是唯一标识
+        User exitsUser = findByUsername(user.getUsername());
+        if (exitsUser != null) {
+            throw new ServiceException(ExceptionDef.ERROR_USER_EXIST);
+        }
         User userData = new User();
         userData.setUsername(user.getUsername());
         userData.setPhone(user.getPhone());
