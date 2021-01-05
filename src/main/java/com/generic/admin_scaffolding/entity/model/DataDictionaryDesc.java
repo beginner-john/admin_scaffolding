@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
      * 数据字典 详情表
@@ -17,7 +18,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "t_data_dictionary_desc")
 @Data
-public class DataDictionaryDesc extends BaseModel {
+public class DataDictionaryDesc extends BaseModel implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

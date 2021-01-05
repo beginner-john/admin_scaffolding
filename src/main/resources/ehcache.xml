@@ -27,7 +27,10 @@
     <defaultCache maxElementsInMemory="10000" eternal="false"
                   timeToIdleSeconds="600" timeToLiveSeconds="600" overflowToDisk="true" />
 
-    <cache name="usersCache" maxElementsInMemory="10000" eternal="false"
+    <cache name="BasicsCache:1h" maxElementsInMemory="10000" eternal="false"
            timeToIdleSeconds="3600" timeToLiveSeconds="3600" overflowToDisk="true" />
+
+    <cache name="BasicsCache:10m" maxElementsInMemory="10000" eternal="false"
+           timeToIdleSeconds="600" timeToLiveSeconds="600" overflowToDisk="true" />
 
 </ehcache>

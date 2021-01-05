@@ -30,6 +30,7 @@ dependencies {
     compile('com.auth0:java-jwt:3.5.0')
     compile("net.sf.ehcache:ehcache")
     compile('org.springframework.boot:spring-boot-starter-data-redis')
+    compile group: 'com.alibaba', name: 'fastjson', version: '1.2.68'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'mysql:mysql-connector-java'
     annotationProcessor 'org.projectlombok:lombok'

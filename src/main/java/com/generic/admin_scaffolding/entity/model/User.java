@@ -1,9 +1,11 @@
 package com.generic.admin_scaffolding.entity.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +18,7 @@ import java.util.List;
 @Entity
 @Table(name = "t_user")
 @Data
-public class User extends BaseModel{
+public class User extends BaseModel implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,8 +30,9 @@ public class User extends BaseModel{
     private String username;
 
     /**
-     * 密码
+     * 密码，使用@JsonIgnore不对外展示
      */
+    @JsonIgnore
     private String password;
 
     /**
@@ -53,10 +56,10 @@ public class User extends BaseModel{
     @Column(name = "is_admin")
     private Integer isAdmin;
 
-    @OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
-    @JoinTable(name="t_user_role",
-            joinColumns={ @JoinColumn(name="user_id",referencedColumnName="id")},
-            inverseJoinColumns={@JoinColumn(name="role_id",referencedColumnName="id")})
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
+    @JoinTable(name = "t_user_role",
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
     private List<SystemRole> roleList = new ArrayList<SystemRole>();
 
 

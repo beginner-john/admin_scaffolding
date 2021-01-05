@@ -1,5 +1,6 @@
 package com.generic.admin_scaffolding.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.generic.admin_scaffolding.common.Result;
 import com.generic.admin_scaffolding.entity.dto.UserDto;
 import com.generic.admin_scaffolding.entity.dto.UserRoleDTO;
@@ -12,10 +13,8 @@ import com.generic.admin_scaffolding.repository.UserRepository;
 import com.generic.admin_scaffolding.repository.UserRoleRepository;
 import com.generic.admin_scaffolding.service.UserService;
 import com.generic.admin_scaffolding.utils.DateUtils;
-import com.generic.admin_scaffolding.utils.MD5Utils;
 import com.generic.admin_scaffolding.utils.PageInfoUtils;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
+import com.generic.admin_scaffolding.utils.RedisUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -34,8 +33,6 @@ import java.util.*;
 @Service("userService")
 public class UserServiceImpl implements UserService {
 
-    //使用ehcache配置的缓存名users_test
-    private final String USER_CACHE_NAME = "usersCache";
 
     @Resource
     private UserRepository userRepository;
@@ -43,6 +40,8 @@ public class UserServiceImpl implements UserService {
     private UserRoleRepository userRoleRepository;
     @Resource
     private BCryptPasswordEncoder passwordEncoder;
+    @Resource
+    private RedisUtils redisUtils;
 
     @Override
     public Result<List<User>> getUserList(int page, int pageSize) {
@@ -84,28 +83,26 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 修改用户，支持修改用户的以下信息
-     * 密码，电话号码，性别，启用状态
+     * 电话号码，性别，启用状态
      *
      * @param user
      * @return
      */
-
     @Override
-    @CacheEvict(value = USER_CACHE_NAME, key = "'user' + #user.id")
     public Result<User> updateUser(User user) {
         User existUser = getUserById(user.getId());
-        existUser.setPassword(passwordEncoder.encode(user.getPassword()));
         existUser.setPhone(user.getPhone());
         existUser.setSex(user.getSex());
         int s = user.getStatus() == DataDictionaryEnum.ENABLE.getCode() ? DataDictionaryEnum.ENABLE.getCode()
                 : DataDictionaryEnum.DISABLE.getCode();
         existUser.setStatus(s);
+        String key = "user" + user.getId();
+        redisUtils.del(key);
 
         return Result.of(userRepository.saveAndFlush(existUser));
     }
 
     @Override
-    @CacheEvict(value = USER_CACHE_NAME, key = "'user' + #userDto.id")
     public Result<User> updatePassword(UserDto userDto) {
         User existUser = getUserById(userDto.getId());
         if (StringUtils.isEmpty(userDto.getOldPassword()) || !userDto.getNewPassword().equals(userDto.getRenewPassword())) {
@@ -126,9 +123,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Cacheable(value = USER_CACHE_NAME, key = "'user' + #id")
     public Result<User> findById(Long id) {
-        return Result.of(getUserById(id));
+        String key = "user" + id;
+        Object object = redisUtils.get(key);
+        if (object == null) {
+            object = getUserById(id);
+            redisUtils.set(key, JSON.toJSONString(object), 60 * 60 * 3);
+            return Result.of((User) object);
+        }
+        //这种使用JSON适用于实体中有实体对象字段
+        User user = JSON.parseObject(object.toString(), User.class);
+        return Result.of(user);
     }
 
     private User getUserById(Long id) {

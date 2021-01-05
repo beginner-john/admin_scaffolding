@@ -8,6 +8,8 @@ import com.generic.admin_scaffolding.repository.DataDictionaryDescRepository;
 import com.generic.admin_scaffolding.service.DataDictionaryDescService;
 import com.generic.admin_scaffolding.utils.DateUtils;
 import com.generic.admin_scaffolding.utils.PageInfoUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +29,9 @@ import java.util.Optional;
 @Service("dataDictionaryDescService")
 public class DataDictionaryDescServiceImpl implements DataDictionaryDescService {
 
+    //使用ehcache配置的缓存名users_test
+    private final String BASICS_CACHE_1H = "BasicsCache:1h";
+
     @Resource
     private DataDictionaryDescRepository dictionaryDescRepository;
 
@@ -37,6 +42,10 @@ public class DataDictionaryDescServiceImpl implements DataDictionaryDescService 
         return Result.of(data.getContent(), PageInfoUtils.getPageInfo(data));
     }
 
+    /**
+     * 目前@Cacheable是缓存到ehcache中，redis使用工具类缓存
+     */
+    @Cacheable(value = BASICS_CACHE_1H, key = "'DataDictionaryDesc' + #id")
     @Override
     public Result<DataDictionaryDesc> findById(Long id) {
         return Result.of(getDictionaryDescById(id));
@@ -69,6 +78,7 @@ public class DataDictionaryDescServiceImpl implements DataDictionaryDescService 
         return Result.of(dictionaryDescRepository.saveAndFlush(data));
     }
 
+    @CacheEvict(value = BASICS_CACHE_1H, key = "'DataDictionaryDesc' + #id")
     @Override
     public Result<DataDictionaryDesc> update(DataDictionaryDesc dictDesc) {
         DataDictionaryDesc existData = getDictionaryDescById(dictDesc.getId());
