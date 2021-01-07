@@ -33,17 +33,19 @@ public interface SystemResourceService {
      * 新增资源
      *
      * @param systemResource
+     * @param userId 当前用户ID
      * @return
      */
-    Result<SystemResource> save(SystemResource systemResource);
+    Result<SystemResource> save(SystemResource systemResource, Long userId);
 
     /**
      * 修改资源
      *
      * @param systemResource
+     * @param userId 当前用户ID
      * @return
      */
-    Result<SystemResource> update(SystemResource systemResource);
+    Result<SystemResource> update(SystemResource systemResource, Long userId);
 
     /**
      * 批量删除资源，根据ids

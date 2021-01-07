@@ -59,7 +59,7 @@ public class SystemRoleServiceImpl implements SystemRoleService {
     }
 
     @Override
-    public Result<SystemRole> saveRole(SystemRole role) {
+    public Result<SystemRole> saveRole(SystemRole role, Long userId) {
         if (StringUtils.isEmpty(role.getRoleCode()) || StringUtils.isEmpty(role.getRoleName())) {
             throw new ServiceException(ExceptionDef.ERROR_COMMON_PARAM_NULL);
         }
@@ -69,24 +69,26 @@ public class SystemRoleServiceImpl implements SystemRoleService {
         systemRole.setRemark(role.getRemark());
         systemRole.setStatus(DataDictionaryEnum.ENABLE.getCode());
         systemRole.setCreateTime(DateUtils.getCurrentTimestamp());
-        systemRole.setCreateBy(null);//todo
+        systemRole.setCreateBy(userId);
 
         return Result.of(systemRoleRepository.saveAndFlush(systemRole));
     }
 
     @Override
-    public Result<SystemRole> updateRole(SystemRole role) {
+    public Result<SystemRole> updateRole(SystemRole role, Long userId) {
         SystemRole existRole = getSystemRoleById(role.getId());
         existRole.setRoleName(StringUtils.isEmpty(role.getRoleName()) ? existRole.getRoleName() : role.getRoleName());
         existRole.setRemark(StringUtils.isEmpty(role.getRemark()) ? existRole.getRemark() : role.getRemark());
         existRole.setStatus(Objects.isNull(role.getStatus()) ? existRole.getStatus() : role.getStatus());
+        existRole.setUpdateBy(userId);
+        existRole.setUpdateTime(DateUtils.getCurrentTimestamp());
 
         return Result.of(systemRoleRepository.saveAndFlush(existRole));
     }
 
     @Override
     public Result bindingRole(RoleResourceDTO dto) {
-        if (Objects.isNull(dto) || Objects.isNull(dto.getRoleId())|| Objects.isNull(dto.getResourceIds())) {
+        if (Objects.isNull(dto) || Objects.isNull(dto.getRoleId()) || Objects.isNull(dto.getResourceIds())) {
             throw new ServiceException(ExceptionDef.ERROR_COMMON_PARAM_NULL);
         }
         List<RoleResource> rrList = new ArrayList<>();

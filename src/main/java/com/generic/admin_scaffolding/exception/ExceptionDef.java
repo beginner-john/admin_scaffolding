@@ -17,6 +17,7 @@ public enum ExceptionDef {
 
 
     ERROR_USER_LOGIN_FAILED(401, "ERROR_USER_LOGIN_FAILED","用户名或密码错误，登录失败"),
+    ERROR_USER_TOKEN_INVALID(402,"ERROR_USER_TOKEN_INVALID","Token失效"),
 
 
     /*

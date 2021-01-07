@@ -7,6 +7,7 @@ import com.generic.admin_scaffolding.entity.model.User;
 import com.generic.admin_scaffolding.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -20,7 +21,7 @@ import java.util.List;
 @Api(tags = "用户模块")
 @RequestMapping("/users")
 @RestController
-public class UserController {
+public class UserController extends AbstractController {
 
     @Resource
     private UserService userService;
@@ -40,13 +41,13 @@ public class UserController {
     @ApiOperation("新增用户")
     @PostMapping
     public Result<User> save(@RequestBody User user) {
-        return userService.saveUser(user);
+        return userService.saveUser(user, super.getUserContentId());
     }
 
     @ApiOperation("修改用户")
     @PutMapping
     public Result<User> update(@RequestBody User user) {
-        return userService.updateUser(user);
+        return userService.updateUser(user, super.getUserContentId());
     }
 
     @ApiOperation("用户修改密码")

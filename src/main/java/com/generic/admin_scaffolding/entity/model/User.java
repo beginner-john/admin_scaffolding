@@ -30,9 +30,8 @@ public class User extends BaseModel implements Serializable {
     private String username;
 
     /**
-     * 密码，使用@JsonIgnore不对外展示
+     * 密码
      */
-    @JsonIgnore
     private String password;
 
     /**
@@ -56,7 +55,7 @@ public class User extends BaseModel implements Serializable {
     @Column(name = "is_admin")
     private Integer isAdmin;
 
-    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     @JoinTable(name = "t_user_role",
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})

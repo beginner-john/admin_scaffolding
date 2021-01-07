@@ -53,7 +53,7 @@ public class SystemResourceServiceImpl implements SystemResourceService {
     }
 
     @Override
-    public Result<SystemResource> save(SystemResource systemResource) {
+    public Result<SystemResource> save(SystemResource systemResource, Long userId) {
         if (StringUtils.isEmpty(systemResource.getName()) || StringUtils.isEmpty(systemResource.getCode())
                 || StringUtils.isEmpty(systemResource.getType())) {
             throw new ServiceException(ExceptionDef.ERROR_COMMON_PARAM_NULL);
@@ -66,13 +66,13 @@ public class SystemResourceServiceImpl implements SystemResourceService {
         resourceData.setRemark(systemResource.getRemark());
         resourceData.setResUrl(systemResource.getResUrl());
         resourceData.setCreateTime(DateUtils.getCurrentTimestamp());
-        resourceData.setCreateBy(null);
+        resourceData.setCreateBy(userId);
 
         return Result.of(resourceRepository.save(resourceData));
     }
 
     @Override
-    public Result<SystemResource> update(SystemResource systemResource) {
+    public Result<SystemResource> update(SystemResource systemResource, Long userId) {
         if (StringUtils.isEmpty(systemResource.getName()) || StringUtils.isEmpty(systemResource.getCode())
                 || StringUtils.isEmpty(systemResource.getType())) {
             throw new ServiceException(ExceptionDef.ERROR_COMMON_PARAM_NULL);
@@ -85,6 +85,8 @@ public class SystemResourceServiceImpl implements SystemResourceService {
         existsResource.setShowOrder(systemResource.getShowOrder());
         existsResource.setRemark(systemResource.getRemark());
         existsResource.setResUrl(systemResource.getResUrl());
+        existsResource.setUpdateBy(userId);
+        existsResource.setUpdateTime(DateUtils.getCurrentTimestamp());
 
         return Result.of(resourceRepository.saveAndFlush(existsResource));
     }

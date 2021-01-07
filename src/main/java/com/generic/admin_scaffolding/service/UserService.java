@@ -31,17 +31,19 @@ public interface UserService {
      * 新增用户
      *
      * @param user
+     * @param userId 当前用户ID
      * @return
      */
-    Result<User> saveUser(User user);
+    Result<User> saveUser(User user, Long userId);
 
     /**
      * 更新用户
      *
      * @param user
+     * @param userId 当前用户ID
      * @return
      */
-    Result<User> updateUser(User user);
+    Result<User> updateUser(User user, Long userId);
 
     /**
      * 用户修改密码

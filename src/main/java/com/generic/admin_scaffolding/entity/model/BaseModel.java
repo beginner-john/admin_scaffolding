@@ -3,6 +3,7 @@ package com.generic.admin_scaffolding.entity.model;
 import lombok.Data;
 
 import javax.persistence.Column;
+import javax.persistence.MappedSuperclass;
 import java.sql.Timestamp;
 
 /**
@@ -13,6 +14,7 @@ import java.sql.Timestamp;
  * @date 2020/12/1 16:26
  */
 @Data
+@MappedSuperclass
 public class BaseModel {
 
 

@@ -19,7 +19,7 @@ import java.util.List;
 @Api(tags = "系统资源管理")
 @RestController
 @RequestMapping("/resource")
-public class SystemResourceController {
+public class SystemResourceController extends AbstractController{
 
     @Resource
     private SystemResourceService resourceService;
@@ -39,13 +39,13 @@ public class SystemResourceController {
     @ApiOperation("新增系统资源")
     @PostMapping
     public Result<SystemResource> add(@RequestBody SystemResource systemResource) {
-        return resourceService.save(systemResource);
+        return resourceService.save(systemResource, super.getUserContentId());
     }
 
     @ApiOperation("修改系统资源")
     @PutMapping
     public Result<SystemResource> update(@RequestBody SystemResource systemResource) {
-        return resourceService.update(systemResource);
+        return resourceService.update(systemResource, super.getUserContentId());
     }
 
     @ApiOperation("批量删除系统资源")

@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Result<User> saveUser(User user) {
+    public Result<User> saveUser(User user,Long userId) {
         if (StringUtils.isEmpty(user.getUsername()) || StringUtils.isEmpty(user.getPassword())) {
             throw new ServiceException(ExceptionDef.ERROR_COMMON_PARAM_NULL);
         }
@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService {
         userData.setStatus(DataDictionaryEnum.ENABLE.getCode());
         userData.setIsAdmin(DataDictionaryEnum.CUSTOMER.getCode());
         userData.setCreateTime(DateUtils.getCurrentTimestamp());
-        userData.setCreateBy(null);//todo
+        userData.setCreateBy(userId);
 
         return Result.of(userRepository.saveAndFlush(userData));
     }
@@ -89,13 +89,15 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public Result<User> updateUser(User user) {
+    public Result<User> updateUser(User user,Long userId) {
         User existUser = getUserById(user.getId());
         existUser.setPhone(user.getPhone());
         existUser.setSex(user.getSex());
         int s = user.getStatus() == DataDictionaryEnum.ENABLE.getCode() ? DataDictionaryEnum.ENABLE.getCode()
                 : DataDictionaryEnum.DISABLE.getCode();
         existUser.setStatus(s);
+        existUser.setUpdateBy(userId);
+        existUser.setUpdateTime(DateUtils.getCurrentTimestamp());
         String key = "user" + user.getId();
         redisUtils.del(key);
 

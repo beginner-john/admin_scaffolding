@@ -34,18 +34,20 @@ public interface SystemRoleService {
      * 新增角色
      *
      * @param role
+     * @param userId 当前用户ID
      * @return
      */
-    Result<SystemRole> saveRole(SystemRole role);
+    Result<SystemRole> saveRole(SystemRole role, Long userId);
 
     /**
      * 修改角色
      * roleCode不能修改，此值用于权限的判断
      *
      * @param role
+     * @param userId 当前用户ID
      * @return
      */
-    Result<SystemRole> updateRole(SystemRole role);
+    Result<SystemRole> updateRole(SystemRole role, Long userId);
 
     Result bindingRole(RoleResourceDTO dto);
 
