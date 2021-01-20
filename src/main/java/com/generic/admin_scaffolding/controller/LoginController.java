@@ -1,6 +1,7 @@
 package com.generic.admin_scaffolding.controller;
 
 import com.generic.admin_scaffolding.common.Result;
+import com.generic.admin_scaffolding.common.annotation.OperationLog;
 import com.generic.admin_scaffolding.service.LoginService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -31,6 +32,7 @@ public class LoginController {
      */
     @ApiOperation("用户登录")
     @PostMapping("/login")
+    @OperationLog
     public Result login(@RequestParam(name = "username") String username, @RequestParam(name = "password") String password) {
         return loginService.login(username, password);
     }
