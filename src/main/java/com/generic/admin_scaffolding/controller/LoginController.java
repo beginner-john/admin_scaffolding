@@ -36,4 +36,19 @@ public class LoginController {
     public Result login(@RequestParam(name = "username") String username, @RequestParam(name = "password") String password) {
         return loginService.login(username, password);
     }
+
+
+    /**
+     * 获取token调用接口
+     * 步骤：
+     * 1，localhost:8080/oauth/token
+     * 2，Auth选择Basic Auth,
+     *      username填configure配置的clientId，password填configure配置的secret
+     * 3，body输入x-www-form-unlencoded格式，
+     *      grant_type:password
+     *      username:tom
+     *      password:123456
+     * 4，token是接口返回的access_token值
+     * 5，token放到Auth的Bearer Token中
+     */
 }

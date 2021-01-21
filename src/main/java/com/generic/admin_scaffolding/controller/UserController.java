@@ -8,7 +8,6 @@ import com.generic.admin_scaffolding.entity.model.User;
 import com.generic.admin_scaffolding.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;

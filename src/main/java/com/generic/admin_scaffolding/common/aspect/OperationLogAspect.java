@@ -33,8 +33,6 @@ import javax.servlet.http.HttpServletRequest;
 @Log4j2
 public class OperationLogAspect {
 
-    protected Logger logger = LoggerFactory.getLogger(getClass());
-
     @Autowired
     private OperationLogRepository operationLogRepository;
 
@@ -53,12 +51,13 @@ public class OperationLogAspect {
     }
 
 
+    /**
+     * 使用了 @Around,是等切面方法执行成功后，才进入下列方法
+     */
     private void saveOperationLog(ProceedingJoinPoint joinPoint) {
 
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         OperationLog operationLog = signature.getMethod().getAnnotation(OperationLog.class);
-        // 参数
-        Object[] args = joinPoint.getArgs();
 
         OperationRecord operation = new OperationRecord();
         // 请求的参数
@@ -71,15 +70,15 @@ public class OperationLogAspect {
             Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
             operation.setUsername(String.valueOf(principal));
-            operation.setAccessPath( operationLog.accessPath());
-            operation.setAccessDesc( operationLog.accessDesc());
+            operation.setAccessPath(operationLog.accessPath());
+            operation.setAccessDesc(operationLog.accessDesc());
             operation.setAccessIp(ipAddr);
             operation.setCreateTime(DateUtils.getCurrentTimestamp());
 
             operationLogRepository.save(operation);
 
         } catch (Exception e) {
-            log.error("操作日志切面异常："+e);
+            log.error("操作日志切面异常：" + e);
         }
     }
 
