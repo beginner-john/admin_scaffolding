@@ -12,7 +12,7 @@ import java.sql.Timestamp;
  * @date 2021/1/7 12:01
  */
 @Entity
-@Table(name = "t_operation_record")
+@Table(name = "t_operation_log")
 @Data
 public class OperationRecord implements Serializable {
 
@@ -28,16 +28,19 @@ public class OperationRecord implements Serializable {
     /**
      * 访问路径
      */
+    @Column(name = "access_path")
     private String accessPath;
 
     /**
      * 访问描述
      */
+    @Column(name = "access_desc")
     private String accessDesc;
 
     /**
      * 访问者的ip
      */
+    @Column(name = "access_ip")
     private String accessIp;
 
 

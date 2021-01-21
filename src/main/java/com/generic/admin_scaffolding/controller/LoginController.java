@@ -32,7 +32,7 @@ public class LoginController {
      */
     @ApiOperation("用户登录")
     @PostMapping("/login")
-    @OperationLog
+    @OperationLog(accessPath = "/login",accessDesc = "用户登录")
     public Result login(@RequestParam(name = "username") String username, @RequestParam(name = "password") String password) {
         return loginService.login(username, password);
     }

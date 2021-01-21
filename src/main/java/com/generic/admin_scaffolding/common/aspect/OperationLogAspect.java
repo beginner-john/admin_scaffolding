@@ -1,18 +1,26 @@
 package com.generic.admin_scaffolding.common.aspect;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.generic.admin_scaffolding.common.annotation.OperationLog;
 import com.generic.admin_scaffolding.entity.model.OperationRecord;
+import com.generic.admin_scaffolding.repository.OperationLogRepository;
+import com.generic.admin_scaffolding.utils.DateUtils;
+import com.generic.admin_scaffolding.utils.IpAddrUtils;
 import lombok.extern.log4j.Log4j2;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
 
-import java.sql.Timestamp;
+import javax.servlet.http.HttpServletRequest;
+
 
 /**
  * @author xiong.bo
@@ -25,6 +33,10 @@ import java.sql.Timestamp;
 @Log4j2
 public class OperationLogAspect {
 
+    protected Logger logger = LoggerFactory.getLogger(getClass());
+
+    @Autowired
+    private OperationLogRepository operationLogRepository;
 
 
     @Pointcut("@annotation(com.generic.admin_scaffolding.common.annotation.OperationLog)")
@@ -48,39 +60,27 @@ public class OperationLogAspect {
         // 参数
         Object[] args = joinPoint.getArgs();
 
-        JSONObject errJson = new JSONObject();
         OperationRecord operation = new OperationRecord();
         // 请求的参数
         try {
-//            if (log != null && args != null && args.length > 0) {
-//                Object params = JSON.parse(JsonAble.toJsonString(args[0]));
-//                if (params instanceof JSONObject) {
-//                    JSONObject json = (JSONObject) params;
-//
-//                    operation.setAgentId(json.getString("agentId"));
-//                    errJson.put("agentId", json.getString("agentId"));
-//                    operation.setUserId(json.getString("userId"));
-//                    errJson.put("userId", json.getString("userId"));
-//                    operation.setOpera(json.getIntValue("opera"));
-//                    errJson.put("opera", json.getString("opera"));
-//                    operation.setPoints(json.getLongValue("points"));
-//                    errJson.put("points", json.getString("points"));
-//                }
-//            }
-//            operation.setId(RandomUtils.getRandomStrWithTime(16));
-//            long time = System.currentTimeMillis();
-//            operation.setTime(new Timestamp(time));
+            RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+            //从获取RequestAttributes中获取HttpServletRequest的信息
+            HttpServletRequest request = (HttpServletRequest) requestAttributes.resolveReference(RequestAttributes.REFERENCE_REQUEST);
 
+            String ipAddr = IpAddrUtils.getIpAddr(request);
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+            operation.setUsername(String.valueOf(principal));
+            operation.setAccessPath( operationLog.accessPath());
+            operation.setAccessDesc( operationLog.accessDesc());
+            operation.setAccessIp(ipAddr);
+            operation.setCreateTime(DateUtils.getCurrentTimestamp());
+
+            operationLogRepository.save(operation);
 
         } catch (Exception e) {
-
-            log.info("刷新销售区域缓存结束");
-            log.error("保存审核记录出错:userId:" + errJson.getString("userId") + ",agentId:"
-                    + errJson.getString("agentId") + ",操作状态:" + errJson.getString("opera")
-                    + ",分数为: " + errJson.getString("points")
-                    + "errorMessage:" + e.getMessage(), e);
+            log.error("操作日志切面异常："+e);
         }
-
     }
 
 }

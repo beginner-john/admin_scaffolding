@@ -1,6 +1,7 @@
 package com.generic.admin_scaffolding.controller;
 
 import com.generic.admin_scaffolding.common.Result;
+import com.generic.admin_scaffolding.common.annotation.OperationLog;
 import com.generic.admin_scaffolding.entity.dto.UserDto;
 import com.generic.admin_scaffolding.entity.dto.UserRoleDTO;
 import com.generic.admin_scaffolding.entity.model.User;
@@ -40,24 +41,28 @@ public class UserController extends AbstractController {
 
     @ApiOperation("新增用户")
     @PostMapping
+    @OperationLog(accessPath = "/users/save",accessDesc = "新增用户")
     public Result<User> save(@RequestBody User user) {
         return userService.saveUser(user, super.getUserContentId());
     }
 
     @ApiOperation("修改用户")
     @PutMapping
+    @OperationLog(accessPath = "/users/update",accessDesc = "修改用户")
     public Result<User> update(@RequestBody User user) {
         return userService.updateUser(user, super.getUserContentId());
     }
 
     @ApiOperation("用户修改密码")
     @PostMapping("updatePassword")
+    @OperationLog(accessPath = "/users/updatePassword",accessDesc = "用户修改密码")
     public Result<User> updatePassword(@RequestBody UserDto userDto) {
         return userService.updatePassword(userDto);
     }
 
     @ApiOperation("删除用户")
     @DeleteMapping("/{id}")
+    @OperationLog(accessPath = "/users/delete",accessDesc = "删除用户")
     public Result<Boolean> delete(@PathVariable Long id) {
         return userService.deleteUser(id);
     }
