@@ -30,7 +30,7 @@ public class SystemRoleController extends AbstractController {
     @ApiOperation("角色列表")
     @GetMapping
     public Result<List<SystemRole>> list(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int pageSize) {
-        return systemRoleService.getRoleList(page, pageSize);
+        return systemRoleService.findRoleList(page, pageSize);
     }
 
     @ApiOperation("角色详情")

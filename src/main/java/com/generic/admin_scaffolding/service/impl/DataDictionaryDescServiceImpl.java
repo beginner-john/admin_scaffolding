@@ -1,6 +1,7 @@
 package com.generic.admin_scaffolding.service.impl;
 
 import com.generic.admin_scaffolding.common.Result;
+import com.generic.admin_scaffolding.entity.constant.FieldConstant;
 import com.generic.admin_scaffolding.entity.model.DataDictionaryDesc;
 import com.generic.admin_scaffolding.exception.ExceptionDef;
 import com.generic.admin_scaffolding.exception.ServiceException;
@@ -13,6 +14,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -37,7 +39,7 @@ public class DataDictionaryDescServiceImpl implements DataDictionaryDescService 
 
     @Override
     public Result<List<DataDictionaryDesc>> list(int page, int pageSize) {
-        Pageable pageable = PageRequest.of(page, pageSize);
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, FieldConstant.CREATED_TIME));
         Page<DataDictionaryDesc> data = dictionaryDescRepository.findAll(pageable);
         return Result.of(data.getContent(), PageInfoUtils.getPageInfo(data));
     }

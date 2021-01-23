@@ -20,7 +20,7 @@ public interface SystemRoleService {
      * @param pageSize
      * @return
      */
-    Result<List<SystemRole>> getRoleList(int page, int pageSize);
+    Result<List<SystemRole>> findRoleList(int page, int pageSize);
 
     /**
      * 查看角色详情

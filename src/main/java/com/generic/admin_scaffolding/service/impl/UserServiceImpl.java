@@ -2,6 +2,7 @@ package com.generic.admin_scaffolding.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.generic.admin_scaffolding.common.Result;
+import com.generic.admin_scaffolding.entity.constant.FieldConstant;
 import com.generic.admin_scaffolding.entity.dto.UserDto;
 import com.generic.admin_scaffolding.entity.dto.UserRoleDTO;
 import com.generic.admin_scaffolding.entity.enums.DataDictionaryEnum;
@@ -18,6 +19,7 @@ import com.generic.admin_scaffolding.utils.RedisUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -44,8 +46,8 @@ public class UserServiceImpl implements UserService {
     private RedisUtils redisUtils;
 
     @Override
-    public Result<List<User>> getUserList(int page, int pageSize) {
-        Pageable pageable = PageRequest.of(page, pageSize);
+    public Result<List<User>> findUserList(int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, FieldConstant.CREATED_TIME));
         Page<User> data = userRepository.findAll(pageable);
         return Result.of(data.getContent(), PageInfoUtils.getPageInfo(data));
     }
@@ -59,7 +61,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Result<User> saveUser(User user,Long userId) {
+    public Result<User> saveUser(User user, Long userId) {
         if (StringUtils.isEmpty(user.getUsername()) || StringUtils.isEmpty(user.getPassword())) {
             throw new ServiceException(ExceptionDef.ERROR_COMMON_PARAM_NULL);
         }
@@ -89,7 +91,7 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public Result<User> updateUser(User user,Long userId) {
+    public Result<User> updateUser(User user, Long userId) {
         User existUser = getUserById(user.getId());
         existUser.setPhone(user.getPhone());
         existUser.setSex(user.getSex());

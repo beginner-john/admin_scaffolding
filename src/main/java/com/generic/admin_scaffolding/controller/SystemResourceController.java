@@ -1,7 +1,7 @@
 package com.generic.admin_scaffolding.controller;
 
 import com.generic.admin_scaffolding.common.Result;
-import com.generic.admin_scaffolding.common.annotation.OperationLog;
+import com.generic.admin_scaffolding.common.annotation.OperationAspect;
 import com.generic.admin_scaffolding.entity.model.SystemResource;
 import com.generic.admin_scaffolding.service.SystemResourceService;
 import io.swagger.annotations.Api;
@@ -28,7 +28,7 @@ public class SystemResourceController extends AbstractController{
     @ApiOperation("系统资源列表")
     @GetMapping
     public Result<List<SystemResource>> list(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int pageSize) {
-        return resourceService.getResourceList(page, pageSize);
+        return resourceService.findResourceList(page, pageSize);
     }
 
     @ApiOperation("系统资源详情")
@@ -51,7 +51,7 @@ public class SystemResourceController extends AbstractController{
 
     @ApiOperation("批量删除系统资源")
     @DeleteMapping
-    @OperationLog(accessPath = "/resource/deleteByIds",accessDesc = "批量删除系统资源")
+    @OperationAspect(accessPath = "/resource/deleteByIds",accessDesc = "批量删除系统资源")
     public Result<Integer> deleteByIds(@RequestBody List<Long> ids) {
         return resourceService.deleteByIds(ids);
     }

@@ -1,6 +1,7 @@
 package com.generic.admin_scaffolding.service.impl;
 
 import com.generic.admin_scaffolding.common.Result;
+import com.generic.admin_scaffolding.entity.constant.FieldConstant;
 import com.generic.admin_scaffolding.entity.dto.RoleResourceDTO;
 import com.generic.admin_scaffolding.entity.enums.DataDictionaryEnum;
 import com.generic.admin_scaffolding.entity.model.RoleResource;
@@ -14,6 +15,7 @@ import com.generic.admin_scaffolding.utils.DateUtils;
 import com.generic.admin_scaffolding.utils.PageInfoUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -38,8 +40,8 @@ public class SystemRoleServiceImpl implements SystemRoleService {
     private RoleResourceRepository roleResourceRepository;
 
     @Override
-    public Result<List<SystemRole>> getRoleList(int page, int pageSize) {
-        PageRequest pageRequest = PageRequest.of(page, pageSize);
+    public Result<List<SystemRole>> findRoleList(int page, int pageSize) {
+        PageRequest pageRequest = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, FieldConstant.CREATED_TIME));
         Page<SystemRole> data = systemRoleRepository.findAll(pageRequest);
         return Result.of(data.getContent(), PageInfoUtils.getPageInfo(data));
     }

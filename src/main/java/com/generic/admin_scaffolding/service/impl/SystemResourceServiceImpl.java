@@ -1,6 +1,7 @@
 package com.generic.admin_scaffolding.service.impl;
 
 import com.generic.admin_scaffolding.common.Result;
+import com.generic.admin_scaffolding.entity.constant.FieldConstant;
 import com.generic.admin_scaffolding.entity.model.SystemResource;
 import com.generic.admin_scaffolding.exception.ExceptionDef;
 import com.generic.admin_scaffolding.exception.ServiceException;
@@ -11,6 +12,7 @@ import com.generic.admin_scaffolding.utils.PageInfoUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -30,8 +32,8 @@ public class SystemResourceServiceImpl implements SystemResourceService {
     private SystemResourceRepository resourceRepository;
 
     @Override
-    public Result<List<SystemResource>> getResourceList(int page, int pageSize) {
-        Pageable pageable = PageRequest.of(page, pageSize);
+    public Result<List<SystemResource>> findResourceList(int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, FieldConstant.CREATED_TIME));
         Page<SystemResource> data = resourceRepository.findAll(pageable);
         return Result.of(data.getContent(), PageInfoUtils.getPageInfo(data));
     }

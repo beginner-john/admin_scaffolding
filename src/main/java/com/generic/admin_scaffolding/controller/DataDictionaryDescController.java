@@ -1,7 +1,7 @@
 package com.generic.admin_scaffolding.controller;
 
 import com.generic.admin_scaffolding.common.Result;
-import com.generic.admin_scaffolding.common.annotation.OperationLog;
+import com.generic.admin_scaffolding.common.annotation.OperationAspect;
 import com.generic.admin_scaffolding.entity.model.DataDictionaryDesc;
 import com.generic.admin_scaffolding.service.DataDictionaryDescService;
 import io.swagger.annotations.Api;
@@ -51,7 +51,7 @@ public class DataDictionaryDescController {
 
     @ApiOperation("批量删除数据字典")
     @DeleteMapping
-    @OperationLog(accessPath = "/basic/dataDictionary/deleteByIds",accessDesc = "批量删除数据字典")
+    @OperationAspect(accessPath = "/basic/dataDictionary/deleteByIds",accessDesc = "批量删除数据字典")
     public Result<Integer> deleteByIds(@RequestBody List<Long> ids) {
         return dictionaryDescService.deleteByPks(ids);
     }

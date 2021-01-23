@@ -19,7 +19,7 @@ public interface SystemResourceService {
      * @param pageSize
      * @return
      */
-    Result<List<SystemResource>> getResourceList(int page, int pageSize);
+    Result<List<SystemResource>> findResourceList(int page, int pageSize);
 
     /**
      * 查看资源详情

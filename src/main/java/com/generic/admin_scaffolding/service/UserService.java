@@ -22,7 +22,7 @@ public interface UserService {
      * @param pageSize
      * @return
      */
-    Result<List<User>> getUserList(int page, int pageSize);
+    Result<List<User>> findUserList(int page, int pageSize);
 
     //根据用户名查找用户实体
     User findByUsername(String username);
