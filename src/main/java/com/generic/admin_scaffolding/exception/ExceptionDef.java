@@ -17,11 +17,15 @@ public enum ExceptionDef {
 
 
     ERROR_USER_LOGIN_FAILED(401, "ERROR_USER_LOGIN_FAILED","用户名或密码错误，登录失败"),
+    ERROR_USER_TOKEN_INVALID(402,"ERROR_USER_TOKEN_INVALID","Token失效"),
 
 
     /*
         业务自定义状态码
      */
+    ERROR_PASSWORD_FAILED(1001, "ERROR_PASSWORD_FAILED","密码错误"),
+    ERROR_PASSWORD_INCONSISTENCY(1002, "ERROR_PASSWORD_INCONSISTENCY","两次密码为空或者不一致"),
+    ERROR_USER_EXIST(1003, "ERROR_USER_EXIST","用户已存在"),
     ;
 
 

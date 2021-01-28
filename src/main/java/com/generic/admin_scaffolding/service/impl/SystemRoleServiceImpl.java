@@ -1,6 +1,7 @@
 package com.generic.admin_scaffolding.service.impl;
 
 import com.generic.admin_scaffolding.common.Result;
+import com.generic.admin_scaffolding.entity.constant.FieldConstant;
 import com.generic.admin_scaffolding.entity.dto.RoleResourceDTO;
 import com.generic.admin_scaffolding.entity.enums.DataDictionaryEnum;
 import com.generic.admin_scaffolding.entity.model.RoleResource;
@@ -14,6 +15,7 @@ import com.generic.admin_scaffolding.utils.DateUtils;
 import com.generic.admin_scaffolding.utils.PageInfoUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -38,23 +40,28 @@ public class SystemRoleServiceImpl implements SystemRoleService {
     private RoleResourceRepository roleResourceRepository;
 
     @Override
-    public Result<List<SystemRole>> getRoleList(int page, int pageSize) {
-        PageRequest pageRequest = PageRequest.of(page, pageSize);
+    public Result<List<SystemRole>> findRoleList(int page, int pageSize) {
+        PageRequest pageRequest = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, FieldConstant.CREATED_TIME));
         Page<SystemRole> data = systemRoleRepository.findAll(pageRequest);
         return Result.of(data.getContent(), PageInfoUtils.getPageInfo(data));
     }
 
     @Override
     public Result<SystemRole> findById(Long id) {
+        return Result.of(getSystemRoleById(id));
+    }
+
+    //查看详情
+    private SystemRole getSystemRoleById(Long id) {
         Optional<SystemRole> optionalUser = systemRoleRepository.findById(id);
         if (!optionalUser.isPresent()) {
             throw new ServiceException(ExceptionDef.ERROR_DATA_NOT_EXIST);
         }
-        return Result.of(optionalUser.get());
+        return optionalUser.get();
     }
 
     @Override
-    public Result<SystemRole> saveRole(SystemRole role) {
+    public Result<SystemRole> saveRole(SystemRole role, Long userId) {
         if (StringUtils.isEmpty(role.getRoleCode()) || StringUtils.isEmpty(role.getRoleName())) {
             throw new ServiceException(ExceptionDef.ERROR_COMMON_PARAM_NULL);
         }
@@ -63,32 +70,27 @@ public class SystemRoleServiceImpl implements SystemRoleService {
         systemRole.setRoleName(role.getRoleName());
         systemRole.setRemark(role.getRemark());
         systemRole.setStatus(DataDictionaryEnum.ENABLE.getCode());
-        systemRole.setCreatedTime(DateUtils.getCurrentTimestamp());
-        systemRole.setCreatedBy(null);//todo
+        systemRole.setCreateTime(DateUtils.getCurrentTimestamp());
+        systemRole.setCreateBy(userId);
 
         return Result.of(systemRoleRepository.saveAndFlush(systemRole));
     }
 
     @Override
-    public Result<SystemRole> updateRole(SystemRole role) {
-        if (StringUtils.isEmpty(role.getId())) {
-            throw new ServiceException(ExceptionDef.ERROR_COMMON_PARAM_NULL);
-        }
-        Optional<SystemRole> optionalRole = systemRoleRepository.findById(role.getId());
-        if (!optionalRole.isPresent()) {
-            throw new ServiceException(ExceptionDef.ERROR_DATA_NOT_EXIST);
-        }
-        SystemRole existRole = optionalRole.get();
+    public Result<SystemRole> updateRole(SystemRole role, Long userId) {
+        SystemRole existRole = getSystemRoleById(role.getId());
         existRole.setRoleName(StringUtils.isEmpty(role.getRoleName()) ? existRole.getRoleName() : role.getRoleName());
         existRole.setRemark(StringUtils.isEmpty(role.getRemark()) ? existRole.getRemark() : role.getRemark());
         existRole.setStatus(Objects.isNull(role.getStatus()) ? existRole.getStatus() : role.getStatus());
+        existRole.setUpdateBy(userId);
+        existRole.setUpdateTime(DateUtils.getCurrentTimestamp());
 
         return Result.of(systemRoleRepository.saveAndFlush(existRole));
     }
 
     @Override
     public Result bindingRole(RoleResourceDTO dto) {
-        if (Objects.isNull(dto) || Objects.isNull(dto.getRoleId())|| Objects.isNull(dto.getResourceIds())) {
+        if (Objects.isNull(dto) || Objects.isNull(dto.getRoleId()) || Objects.isNull(dto.getResourceIds())) {
             throw new ServiceException(ExceptionDef.ERROR_COMMON_PARAM_NULL);
         }
         List<RoleResource> rrList = new ArrayList<>();
@@ -96,8 +98,8 @@ public class SystemRoleServiceImpl implements SystemRoleService {
             RoleResource roleResource = new RoleResource();
             roleResource.setRoleId(dto.getRoleId());
             roleResource.setResourceId(e);
-            roleResource.setCreatedBy(null);
-            roleResource.setCreatedTime(DateUtils.getCurrentTimestamp());
+            roleResource.setCreateBy(null);
+            roleResource.setCreateTime(DateUtils.getCurrentTimestamp());
             rrList.add(roleResource);
         });
 

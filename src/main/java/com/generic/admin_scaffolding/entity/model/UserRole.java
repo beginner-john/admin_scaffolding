@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 
 /**
- * 用户和系统角色的管理表
+ * 用户和系统角色的关联表
  *
  * @author xiong.bo
  * @version 1.0
@@ -31,13 +31,13 @@ public class UserRole {
     /**
      * 创建时间
      */
-    @Column(name = "created_time")
-    private Timestamp createdTime;
+    @Column(name = "create_time")
+    private Timestamp createTime;
 
     /**
      * 创建者
      */
-    @Column(name = "created_by")
-    private Long createdBy;
+    @Column(name = "create_by")
+    private Long createBy;
 
 }

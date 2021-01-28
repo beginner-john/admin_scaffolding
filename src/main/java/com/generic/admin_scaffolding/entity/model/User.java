@@ -1,19 +1,24 @@
 package com.generic.admin_scaffolding.entity.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 用户信息表
  * 这里用户指登录系统的用户
  */
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "t_user")
 @Data
-public class User {
+public class User extends BaseModel implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,21 +50,21 @@ public class User {
     private Integer status;
 
     /**
-     * 创建时间
-     */
-    @Column(name = "created_time")
-    private Timestamp createdTime;
-
-    /**
-     * 创建者
-     */
-    @Column(name = "created_by")
-    private Long createdBy;
-
-    /**
      * 标识是否是管理员：0 默认普通用户，1 为系统管理员
      */
     @Column(name = "is_admin")
     private Integer isAdmin;
+
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @JoinTable(name = "t_user_role",
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
+    private List<SystemRole> roleList = new ArrayList<SystemRole>();
+
+
+    public List<SystemRole> getRoleList() {
+        return roleList;
+    }
+
 
 }

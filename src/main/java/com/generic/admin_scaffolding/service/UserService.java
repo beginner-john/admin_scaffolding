@@ -1,6 +1,7 @@
 package com.generic.admin_scaffolding.service;
 
 import com.generic.admin_scaffolding.common.Result;
+import com.generic.admin_scaffolding.entity.dto.UserDto;
 import com.generic.admin_scaffolding.entity.dto.UserRoleDTO;
 import com.generic.admin_scaffolding.entity.model.User;
 
@@ -21,23 +22,36 @@ public interface UserService {
      * @param pageSize
      * @return
      */
-    Result<List<User>> getUserList(int page, int pageSize);
+    Result<List<User>> findUserList(int page, int pageSize);
+
+    //根据用户名查找用户实体
+    User findByUsername(String username);
 
     /**
      * 新增用户
      *
      * @param user
+     * @param userId 当前用户ID
      * @return
      */
-    Result<User> saveUser(User user);
+    Result<User> saveUser(User user, Long userId);
 
     /**
      * 更新用户
      *
      * @param user
+     * @param userId 当前用户ID
      * @return
      */
-    Result<User> updateUser(User user);
+    Result<User> updateUser(User user, Long userId);
+
+    /**
+     * 用户修改密码
+     *
+     * @param userDto
+     * @return
+     */
+    Result<User> updatePassword(UserDto userDto);
 
     /**
      * 删除用户
@@ -49,7 +63,19 @@ public interface UserService {
 
     Result<User> findById(Long id);
 
+    /**
+     * 用户绑定角色
+     *
+     * @param roleIds
+     * @return
+     */
     Result bindingRole(UserRoleDTO roleIds);
 
+    /**
+     * 用户解除角色
+     *
+     * @param roleIds
+     * @return
+     */
     Result relieveRole(UserRoleDTO roleIds);
 }

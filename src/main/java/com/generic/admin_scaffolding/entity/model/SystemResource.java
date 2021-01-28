@@ -1,9 +1,9 @@
 package com.generic.admin_scaffolding.entity.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 
 /**
  * 系统资源表
@@ -13,10 +13,11 @@ import java.sql.Timestamp;
  * @date 2020/11/29 11:20
  */
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "t_system_resource")
 @Data
-public class SystemResource {
+public class SystemResource extends BaseModel{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,17 +61,5 @@ public class SystemResource {
      */
     @Column(name = "show_order")
     private Integer showOrder;
-
-    /**
-     * 创建时间
-     */
-    @Column(name = "created_time")
-    private Timestamp createdTime;
-
-    /**
-     * 创建者
-     */
-    @Column(name = "created_by")
-    private Long createdBy;
 
 }

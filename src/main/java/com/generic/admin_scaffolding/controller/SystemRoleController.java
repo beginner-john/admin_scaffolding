@@ -22,7 +22,7 @@ import java.util.List;
 @Api(tags = "角色模块")
 @RequestMapping("/roles")
 @RestController
-public class SystemRoleController {
+public class SystemRoleController extends AbstractController {
 
     @Resource
     private SystemRoleService systemRoleService;
@@ -30,7 +30,7 @@ public class SystemRoleController {
     @ApiOperation("角色列表")
     @GetMapping
     public Result<List<SystemRole>> list(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int pageSize) {
-        return systemRoleService.getRoleList(page, pageSize);
+        return systemRoleService.findRoleList(page, pageSize);
     }
 
     @ApiOperation("角色详情")
@@ -42,13 +42,13 @@ public class SystemRoleController {
     @ApiOperation("添加角色")
     @PostMapping
     public Result<SystemRole> saveRole(@RequestBody SystemRole role) {
-        return systemRoleService.saveRole(role);
+        return systemRoleService.saveRole(role, super.getUserContentId());
     }
 
     @ApiOperation("修改角色")
     @PutMapping
     public Result<SystemRole> updateRole(@RequestBody SystemRole role) {
-        return systemRoleService.updateRole(role);
+        return systemRoleService.updateRole(role, super.getUserContentId());
     }
 
 

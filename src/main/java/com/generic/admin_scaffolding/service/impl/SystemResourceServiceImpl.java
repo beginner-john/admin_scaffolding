@@ -1,6 +1,7 @@
 package com.generic.admin_scaffolding.service.impl;
 
 import com.generic.admin_scaffolding.common.Result;
+import com.generic.admin_scaffolding.entity.constant.FieldConstant;
 import com.generic.admin_scaffolding.entity.model.SystemResource;
 import com.generic.admin_scaffolding.exception.ExceptionDef;
 import com.generic.admin_scaffolding.exception.ServiceException;
@@ -11,6 +12,7 @@ import com.generic.admin_scaffolding.utils.PageInfoUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -30,8 +32,8 @@ public class SystemResourceServiceImpl implements SystemResourceService {
     private SystemResourceRepository resourceRepository;
 
     @Override
-    public Result<List<SystemResource>> getResourceList(int page, int pageSize) {
-        Pageable pageable = PageRequest.of(page, pageSize);
+    public Result<List<SystemResource>> findResourceList(int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, FieldConstant.CREATED_TIME));
         Page<SystemResource> data = resourceRepository.findAll(pageable);
         return Result.of(data.getContent(), PageInfoUtils.getPageInfo(data));
     }
@@ -53,7 +55,7 @@ public class SystemResourceServiceImpl implements SystemResourceService {
     }
 
     @Override
-    public Result<SystemResource> save(SystemResource systemResource) {
+    public Result<SystemResource> save(SystemResource systemResource, Long userId) {
         if (StringUtils.isEmpty(systemResource.getName()) || StringUtils.isEmpty(systemResource.getCode())
                 || StringUtils.isEmpty(systemResource.getType())) {
             throw new ServiceException(ExceptionDef.ERROR_COMMON_PARAM_NULL);
@@ -65,14 +67,14 @@ public class SystemResourceServiceImpl implements SystemResourceService {
         resourceData.setShowOrder(systemResource.getShowOrder());
         resourceData.setRemark(systemResource.getRemark());
         resourceData.setResUrl(systemResource.getResUrl());
-        resourceData.setCreatedTime(DateUtils.getCurrentTimestamp());
-        resourceData.setCreatedBy(null);
+        resourceData.setCreateTime(DateUtils.getCurrentTimestamp());
+        resourceData.setCreateBy(userId);
 
         return Result.of(resourceRepository.save(resourceData));
     }
 
     @Override
-    public Result<SystemResource> update(SystemResource systemResource) {
+    public Result<SystemResource> update(SystemResource systemResource, Long userId) {
         if (StringUtils.isEmpty(systemResource.getName()) || StringUtils.isEmpty(systemResource.getCode())
                 || StringUtils.isEmpty(systemResource.getType())) {
             throw new ServiceException(ExceptionDef.ERROR_COMMON_PARAM_NULL);
@@ -85,6 +87,8 @@ public class SystemResourceServiceImpl implements SystemResourceService {
         existsResource.setShowOrder(systemResource.getShowOrder());
         existsResource.setRemark(systemResource.getRemark());
         existsResource.setResUrl(systemResource.getResUrl());
+        existsResource.setUpdateBy(userId);
+        existsResource.setUpdateTime(DateUtils.getCurrentTimestamp());
 
         return Result.of(resourceRepository.saveAndFlush(existsResource));
     }

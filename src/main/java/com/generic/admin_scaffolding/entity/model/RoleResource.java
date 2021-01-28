@@ -38,13 +38,13 @@ public class RoleResource {
     /**
      * 创建时间
      */
-    @Column(name = "created_time")
-    private Timestamp createdTime;
+    @Column(name = "create_time")
+    private Timestamp createTime;
 
     /**
      * 创建者
      */
-    @Column(name = "created_by")
-    private Long createdBy;
+    @Column(name = "create_by")
+    private Long createBy;
 
 }
