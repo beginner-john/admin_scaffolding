@@ -39,3 +39,11 @@ General backstage management system scaffold
 ## 8，定时任务
 暂未实现。
 
+
+# 程序运行
+程序运行步骤：
+1，git clone 项目。
+2，创建数据库和表结构，sql文件在resources/static/目录下。
+3，修改application.yml文件中的redis地址和端口等配置，若访问本地redis，需要下载redis客户端，并启动redis服务。
+4，修改application.yml文件中的datasource的配置，数据库地址和用户信息的配置。
+5，启动服务。
