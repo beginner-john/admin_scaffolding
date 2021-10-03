@@ -10,6 +10,7 @@ public class AdminScaffoldingApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(AdminScaffoldingApplication.class, args);
+        System.out.println("======= AdminScaffoldingApplication run ok！=======");
     }
 
 }
