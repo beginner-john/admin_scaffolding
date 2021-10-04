@@ -12,6 +12,7 @@ public enum DataDictionaryEnum {
     ENABLE(1,"enable","启用"),
     DISABLE(0,"disable","禁用"),
     SYSTEM_ADMIN(1,"system_admin","系统管理员"),
+    ADMIN(2,"admin","管理员"),
     CUSTOMER(0,"customer","普通用户"),
     ;
 

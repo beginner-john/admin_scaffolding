@@ -52,11 +52,25 @@ public class UserController extends AbstractController {
         return userService.updateUser(user, super.getUserContentId());
     }
 
+    @ApiOperation("启用/禁用用户")
+    @PostMapping("/enable/{id}/{status}")
+    @OperationAspect(accessPath = "/users/enable/id/status", accessDesc = "启用/禁用用户")
+    public Result<User> enableUser(@PathVariable Long id, @PathVariable Integer status) {
+        return userService.enableUser(id, status, super.getUserContentId());
+    }
+
     @ApiOperation("用户修改密码")
     @PostMapping("updatePassword")
     @OperationAspect(accessPath = "/users/updatePassword",accessDesc = "用户修改密码")
     public Result<User> updatePassword(@RequestBody UserDto userDto) {
         return userService.updatePassword(userDto);
+    }
+
+    @ApiOperation("管理员给用户重置密码")
+    @PostMapping("resetAccountPassword")
+    @OperationAspect(accessPath = "/users/resetAccountPassword",accessDesc = "管理员给用户重置密码")
+    public Result<User> resetAccountPassword(@RequestBody UserDto userDto) {
+        return userService.resetAccountPassword(userDto, super.getUserContentId());
     }
 
     @ApiOperation("删除用户")

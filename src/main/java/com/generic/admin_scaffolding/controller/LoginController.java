@@ -41,9 +41,10 @@ public class LoginController {
     /**
      * 获取token调用接口
      * 步骤：
-     * 1，localhost:8080/oauth/token
+     * 1，localhost:8080/oauth/token  Post请求
      * 2，Auth选择Basic Auth,
-     *      username填configure配置的clientId，password填configure配置的secret
+     *      username填AuthorizationServerConfiguration配置的clientId，
+     *      password填AuthorizationServerConfiguration配置的secret
      * 3，body输入x-www-form-unlencoded格式，
      *      grant_type:password
      *      username:tom

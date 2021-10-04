@@ -6,6 +6,7 @@ import com.generic.admin_scaffolding.entity.constant.FieldConstant;
 import com.generic.admin_scaffolding.entity.dto.UserDto;
 import com.generic.admin_scaffolding.entity.dto.UserRoleDTO;
 import com.generic.admin_scaffolding.entity.enums.DataDictionaryEnum;
+import com.generic.admin_scaffolding.entity.model.SystemRole;
 import com.generic.admin_scaffolding.entity.model.User;
 import com.generic.admin_scaffolding.entity.model.UserRole;
 import com.generic.admin_scaffolding.exception.ExceptionDef;
@@ -26,6 +27,7 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author xiong.bo
@@ -117,6 +119,8 @@ public class UserServiceImpl implements UserService {
             throw new ServiceException(ExceptionDef.ERROR_PASSWORD_FAILED);
         }
         existUser.setPassword(passwordEncoder.encode(userDto.getNewPassword()));
+        existUser.setUpdateBy(existUser.getId());
+        existUser.setUpdateTime(DateUtils.getCurrentTimestamp());
         return Result.of(userRepository.saveAndFlush(existUser));
     }
 
@@ -177,5 +181,39 @@ public class UserServiceImpl implements UserService {
         }
         Integer row = userRoleRepository.deleteByRoleIds(dto.getRoleIds());
         return Result.of(row);
+    }
+
+    @Override
+    public Result<User> enableUser(Long id, Integer status, Long userContentId) {
+        Result<User> userResult = findById(id);
+        User user = userResult.getContent();
+        status = DataDictionaryEnum.ENABLE.getCode() == status ? 1 : 0;
+        user.setStatus(status);
+        user.setUpdateBy(userContentId);
+        user.setUpdateTime(DateUtils.getCurrentTimestamp());
+        return Result.of(userRepository.saveAndFlush(user));
+    }
+
+    @Override
+    public Result<User> resetAccountPassword(UserDto userDto, Long userContentId) {
+        User existUser = getUserById(userDto.getId());
+        if (!userDto.getNewPassword().equals(userDto.getRenewPassword())) {
+            throw new ServiceException(ExceptionDef.ERROR_PASSWORD_INCONSISTENCY);
+        }
+        //获取当前登录用户是否是管理员
+        User adminUser = getUserById(userContentId);
+        List<SystemRole> roleList = adminUser.getRoleList();
+        List<String> ruleCodeList = new ArrayList<>();
+        if (roleList != null) {
+            ruleCodeList = roleList.stream().map(SystemRole::getRoleCode).collect(Collectors.toList());
+        }
+        if (!ruleCodeList.contains(DataDictionaryEnum.SYSTEM_ADMIN.getName())
+                && !ruleCodeList.contains(DataDictionaryEnum.ADMIN.getName())) {
+            throw new ServiceException(ExceptionDef.ERROR_USER_NOT_ADMIN);
+        }
+        existUser.setPassword(passwordEncoder.encode(userDto.getNewPassword()));
+        existUser.setUpdateBy(userContentId);
+        existUser.setUpdateTime(DateUtils.getCurrentTimestamp());
+        return Result.of(userRepository.saveAndFlush(existUser));
     }
 }

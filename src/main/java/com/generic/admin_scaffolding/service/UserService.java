@@ -78,4 +78,23 @@ public interface UserService {
      * @return
      */
     Result relieveRole(UserRoleDTO roleIds);
+
+    /**
+     * 启用/禁用用户
+     * 禁用用户无法登录和操作
+     *
+     * @param id
+     * @param status
+     * @param userContentId
+     * @return
+     */
+    Result<User> enableUser(Long id, Integer status, Long userContentId);
+
+    /**
+     * 管理员给用户重置密码
+     * @param userDto
+     * @param userContentId
+     * @return
+     */
+    Result<User> resetAccountPassword(UserDto userDto, Long userContentId);
 }
