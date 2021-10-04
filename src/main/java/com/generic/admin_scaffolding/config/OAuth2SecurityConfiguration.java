@@ -67,7 +67,7 @@ public class OAuth2SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.logout().permitAll().deleteCookies("JSESSIONID");
         http.csrf().disable();
         http.authorizeRequests()
-                .antMatchers("/login").permitAll()
+                .antMatchers("/admin/login").permitAll()
                 .anyRequest().authenticated();
     }
 

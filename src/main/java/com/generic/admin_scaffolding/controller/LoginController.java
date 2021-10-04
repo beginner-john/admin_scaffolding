@@ -5,9 +5,8 @@ import com.generic.admin_scaffolding.common.annotation.OperationAspect;
 import com.generic.admin_scaffolding.service.LoginService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.oauth2.provider.token.ConsumerTokenServices;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -18,10 +17,14 @@ import javax.annotation.Resource;
  */
 @Api(tags = "登录")
 @RestController
+@RequestMapping("/admin")
 public class LoginController {
 
     @Resource
     private LoginService loginService;
+    @Resource
+    private ConsumerTokenServices consumerTokenServices;
+
 
     /**
      * 用户登录
@@ -32,9 +35,25 @@ public class LoginController {
      */
     @ApiOperation("用户登录")
     @PostMapping("/login")
-    @OperationAspect(accessPath = "/login",accessDesc = "用户登录")
+    @OperationAspect(accessPath = "/login", accessDesc = "用户登录")
     public Result login(@RequestParam(name = "username") String username, @RequestParam(name = "password") String password) {
         return loginService.login(username, password);
+    }
+
+    /**
+     * 用户退出
+     *
+     * @param accessToken
+     * @return
+     */
+    @ApiOperation("用户退出")
+    @GetMapping("/logout")
+    @OperationAspect(accessPath = "/logout", accessDesc = "用户退出")
+    public Result logout(@RequestParam(name = "token") String accessToken) {
+        if (consumerTokenServices.revokeToken(accessToken)) {
+            return Result.of(true);
+        }
+        return Result.error("退出失败");
     }
 
 
