@@ -14,6 +14,8 @@ public enum DataDictionaryEnum {
     SYSTEM_ADMIN(1,"system_admin","系统管理员"),
     ADMIN(2,"admin","管理员"),
     CUSTOMER(0,"customer","普通用户"),
+    UNDISPOSED(0,"undisposed","未处理"),
+    DISPOSED(1,"disposed","已处理"),
     ;
 
 
