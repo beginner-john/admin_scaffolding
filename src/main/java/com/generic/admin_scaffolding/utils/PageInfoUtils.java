@@ -22,6 +22,8 @@ public class PageInfoUtils {
         PageInfo pageInfo = new PageInfo();
         pageInfo.setTotalElements(data.getTotalElements());
         pageInfo.setTotalPages(data.getTotalPages());
+        pageInfo.setCurrent(data.getNumber());
+        pageInfo.setPageSize(data.getSize());
         return pageInfo;
     }
 

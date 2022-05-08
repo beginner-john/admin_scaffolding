@@ -3,7 +3,7 @@ package com.generic.admin_scaffolding.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.generic.admin_scaffolding.common.Result;
 import com.generic.admin_scaffolding.entity.constant.FieldConstant;
-import com.generic.admin_scaffolding.entity.dto.UserDto;
+import com.generic.admin_scaffolding.entity.dto.UserPasswordDTO;
 import com.generic.admin_scaffolding.entity.dto.UserRoleDTO;
 import com.generic.admin_scaffolding.entity.enums.DataDictionaryEnum;
 import com.generic.admin_scaffolding.entity.model.SystemRole;
@@ -42,8 +42,8 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     @Resource
     private UserRoleRepository userRoleRepository;
-    @Resource
-    private BCryptPasswordEncoder passwordEncoder;
+//    @Resource
+//    private BCryptPasswordEncoder passwordEncoder;
     @Resource
     private RedisUtils redisUtils;
 
@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService {
         userData.setUsername(user.getUsername());
         userData.setPhone(user.getPhone());
         userData.setSex(user.getSex());
-        userData.setPassword(passwordEncoder.encode(user.getPassword()));
+//        userData.setPassword(passwordEncoder.encode(user.getPassword()));
         userData.setStatus(DataDictionaryEnum.ENABLE.getCode());
         userData.setIsAdmin(DataDictionaryEnum.CUSTOMER.getCode());
         userData.setCreateTime(DateUtils.getCurrentTimestamp());
@@ -109,16 +109,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Result<User> updatePassword(UserDto userDto) {
-        User existUser = getUserById(userDto.getId());
-        if (StringUtils.isEmpty(userDto.getOldPassword()) || !userDto.getNewPassword().equals(userDto.getRenewPassword())) {
+    public Result<User> updatePassword(UserPasswordDTO userPasswordDto) {
+        User existUser = getUserById(userPasswordDto.getId());
+        if (StringUtils.isEmpty(userPasswordDto.getOldPassword()) || !userPasswordDto.getNewPassword().equals(userPasswordDto.getRenewPassword())) {
             throw new ServiceException(ExceptionDef.ERROR_PASSWORD_INCONSISTENCY);
         }
         //matches 方法解密来验证
-        if (!passwordEncoder.matches(userDto.getOldPassword(), existUser.getPassword())) {
-            throw new ServiceException(ExceptionDef.ERROR_PASSWORD_FAILED);
-        }
-        existUser.setPassword(passwordEncoder.encode(userDto.getNewPassword()));
+//        if (!passwordEncoder.matches(userPasswordDto.getOldPassword(), existUser.getPassword())) {
+//            throw new ServiceException(ExceptionDef.ERROR_PASSWORD_FAILED);
+//        }
+//        existUser.setPassword(passwordEncoder.encode(userPasswordDto.getNewPassword()));
         existUser.setUpdateBy(existUser.getId());
         existUser.setUpdateTime(DateUtils.getCurrentTimestamp());
         return Result.of(userRepository.saveAndFlush(existUser));
@@ -195,9 +195,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Result<User> resetAccountPassword(UserDto userDto, Long userContentId) {
-        User existUser = getUserById(userDto.getId());
-        if (!userDto.getNewPassword().equals(userDto.getRenewPassword())) {
+    public Result<User> resetAccountPassword(UserPasswordDTO userPasswordDto, Long userContentId) {
+        User existUser = getUserById(userPasswordDto.getId());
+        if (!userPasswordDto.getNewPassword().equals(userPasswordDto.getRenewPassword())) {
             throw new ServiceException(ExceptionDef.ERROR_PASSWORD_INCONSISTENCY);
         }
         //获取当前登录用户是否是管理员
@@ -211,7 +211,7 @@ public class UserServiceImpl implements UserService {
                 && !ruleCodeList.contains(DataDictionaryEnum.ADMIN.getName())) {
             throw new ServiceException(ExceptionDef.ERROR_USER_NOT_ADMIN);
         }
-        existUser.setPassword(passwordEncoder.encode(userDto.getNewPassword()));
+//        existUser.setPassword(passwordEncoder.encode(userPasswordDto.getNewPassword()));
         existUser.setUpdateBy(userContentId);
         existUser.setUpdateTime(DateUtils.getCurrentTimestamp());
         return Result.of(userRepository.saveAndFlush(existUser));

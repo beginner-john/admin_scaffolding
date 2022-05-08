@@ -1,6 +1,7 @@
 package com.generic.admin_scaffolding.service.impl;
 
 import com.generic.admin_scaffolding.common.Result;
+import com.generic.admin_scaffolding.entity.dto.LoginDTO;
 import com.generic.admin_scaffolding.entity.model.User;
 import com.generic.admin_scaffolding.exception.ExceptionDef;
 import com.generic.admin_scaffolding.exception.ServiceException;
@@ -34,12 +35,12 @@ public class LoginServiceImpl implements LoginService {
      * 因此通过用户名查找用户,再对比密码是否一致,
      * 这样就要求用户名是唯一的
      *
-     * @param username 用户名
-     * @param password 密码
      * @return
      */
     @Override
-    public Result login(String username, String password) {
+    public Result<User> login(LoginDTO loginDTO) {
+        String username = loginDTO.getUsername();
+        String password = loginDTO.getPassword();
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
             throw new ServiceException(ExceptionDef.ERROR_COMMON_PARAM_NULL);
         }

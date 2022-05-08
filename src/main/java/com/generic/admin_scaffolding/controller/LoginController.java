@@ -2,6 +2,8 @@ package com.generic.admin_scaffolding.controller;
 
 import com.generic.admin_scaffolding.common.Result;
 import com.generic.admin_scaffolding.common.annotation.OperationAspect;
+import com.generic.admin_scaffolding.entity.dto.LoginDTO;
+import com.generic.admin_scaffolding.entity.model.User;
 import com.generic.admin_scaffolding.service.LoginService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -29,15 +31,14 @@ public class LoginController {
     /**
      * 用户登录
      *
-     * @param username 用户名
-     * @param password 密码
+     * @param loginDTO
      * @return
      */
     @ApiOperation("用户登录")
     @PostMapping("/login")
     @OperationAspect(accessPath = "/login", accessDesc = "用户登录")
-    public Result login(@RequestParam(name = "username") String username, @RequestParam(name = "password") String password) {
-        return loginService.login(username, password);
+    public Result<User> login(@RequestBody LoginDTO loginDTO) {
+        return loginService.login(loginDTO);
     }
 
     /**
@@ -47,7 +48,7 @@ public class LoginController {
      * @return
      */
     @ApiOperation("用户退出")
-    @GetMapping("/logout")
+    @PostMapping("/logout")
     @OperationAspect(accessPath = "/logout", accessDesc = "用户退出")
     public Result logout(@RequestParam(name = "token") String accessToken) {
         if (consumerTokenServices.revokeToken(accessToken)) {
@@ -60,7 +61,7 @@ public class LoginController {
     /**
      * 获取token调用接口
      * 步骤：
-     * 1，localhost:8080/oauth/token  Post请求
+     * 1，localhost:8080/api/oauth/token  Post请求
      * 2，Auth选择Basic Auth,
      *      username填AuthorizationServerConfiguration配置的clientId，
      *      password填AuthorizationServerConfiguration配置的secret

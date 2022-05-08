@@ -1,7 +1,7 @@
 package com.generic.admin_scaffolding.service;
 
 import com.generic.admin_scaffolding.common.Result;
-import com.generic.admin_scaffolding.entity.dto.UserDto;
+import com.generic.admin_scaffolding.entity.dto.UserPasswordDTO;
 import com.generic.admin_scaffolding.entity.dto.UserRoleDTO;
 import com.generic.admin_scaffolding.entity.model.User;
 
@@ -48,10 +48,10 @@ public interface UserService {
     /**
      * 用户修改密码
      *
-     * @param userDto
+     * @param userPasswordDto
      * @return
      */
-    Result<User> updatePassword(UserDto userDto);
+    Result<User> updatePassword(UserPasswordDTO userPasswordDto);
 
     /**
      * 删除用户
@@ -92,9 +92,9 @@ public interface UserService {
 
     /**
      * 管理员给用户重置密码
-     * @param userDto
+     * @param userPasswordDto
      * @param userContentId
      * @return
      */
-    Result<User> resetAccountPassword(UserDto userDto, Long userContentId);
+    Result<User> resetAccountPassword(UserPasswordDTO userPasswordDto, Long userContentId);
 }

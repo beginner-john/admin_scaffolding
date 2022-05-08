@@ -1,6 +1,8 @@
 package com.generic.admin_scaffolding.service;
 
 import com.generic.admin_scaffolding.common.Result;
+import com.generic.admin_scaffolding.entity.dto.LoginDTO;
+import com.generic.admin_scaffolding.entity.model.User;
 
 /**
  * @author xiong.bo
@@ -12,10 +14,8 @@ public interface LoginService {
     /**
      * 用户登录
      *
-     * @param username 用户名
-     * @param password 密码
      * @return
      */
-    Result login(String username, String password);
+    Result<User> login(LoginDTO loginDTO);
 
 }

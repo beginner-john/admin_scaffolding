@@ -55,6 +55,9 @@ public class User extends BaseModel implements Serializable {
     @Column(name = "is_admin")
     private Integer isAdmin;
 
+    /**
+     * 拥有的角色
+     */
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     @JoinTable(name = "t_user_role",
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},

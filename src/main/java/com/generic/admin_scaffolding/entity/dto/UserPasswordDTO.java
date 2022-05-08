@@ -10,7 +10,7 @@ import java.io.Serializable;
  * @date 2020/12/21 16:14
  */
 @Data
-public class UserDto implements Serializable {
+public class UserPasswordDTO implements Serializable {
 
     private Long id;
     private String oldPassword;

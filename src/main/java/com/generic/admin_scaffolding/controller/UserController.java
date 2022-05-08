@@ -2,7 +2,7 @@ package com.generic.admin_scaffolding.controller;
 
 import com.generic.admin_scaffolding.common.Result;
 import com.generic.admin_scaffolding.common.annotation.OperationAspect;
-import com.generic.admin_scaffolding.entity.dto.UserDto;
+import com.generic.admin_scaffolding.entity.dto.UserPasswordDTO;
 import com.generic.admin_scaffolding.entity.dto.UserRoleDTO;
 import com.generic.admin_scaffolding.entity.model.User;
 import com.generic.admin_scaffolding.service.UserService;
@@ -21,6 +21,7 @@ import java.util.List;
 @Api(tags = "用户模块")
 @RequestMapping("/users")
 @RestController
+@CrossOrigin
 public class UserController extends AbstractController {
 
     @Resource
@@ -36,6 +37,12 @@ public class UserController extends AbstractController {
     @GetMapping("/{id}")
     public Result<User> findById(@PathVariable Long id) {
         return userService.findById(id);
+    }
+
+    @ApiOperation("获取当前登录用户信息")
+    @GetMapping("/current")
+    public Result<User> findCurrentUSer() {
+        return Result.of(super.getUserContent());
     }
 
     @ApiOperation("新增用户")
@@ -62,15 +69,15 @@ public class UserController extends AbstractController {
     @ApiOperation("用户修改密码")
     @PostMapping("updatePassword")
     @OperationAspect(accessPath = "/users/updatePassword",accessDesc = "用户修改密码")
-    public Result<User> updatePassword(@RequestBody UserDto userDto) {
-        return userService.updatePassword(userDto);
+    public Result<User> updatePassword(@RequestBody UserPasswordDTO userPasswordDto) {
+        return userService.updatePassword(userPasswordDto);
     }
 
     @ApiOperation("管理员给用户重置密码")
     @PostMapping("resetAccountPassword")
     @OperationAspect(accessPath = "/users/resetAccountPassword",accessDesc = "管理员给用户重置密码")
-    public Result<User> resetAccountPassword(@RequestBody UserDto userDto) {
-        return userService.resetAccountPassword(userDto, super.getUserContentId());
+    public Result<User> resetAccountPassword(@RequestBody UserPasswordDTO userPasswordDto) {
+        return userService.resetAccountPassword(userPasswordDto, super.getUserContentId());
     }
 
     @ApiOperation("删除用户")
